@@ -1,0 +1,75 @@
+<%- include('../partials/header') %>
+
+<form action="<%= redigetId ? '/ieraksti/' + redigetId : '/ieraksti' %>" method="post" class="forma plata" novalidate>
+    <h1><%= redigetId ? t('ieraksti.edit_title') : t('ieraksti.new_title') %></h1>
+
+    <div class="lauks">
+        <label for="virsraksts"><%= t('common.virsraksts') %></label>
+        <input id="virsraksts" name="virsraksts" type="text" required minlength="4" maxlength="150" value="<%= forma.virsraksts %>">
+        <% if (kludas.virsraksts) { %><span class="lauka-kluda"><%= t(kludas.virsraksts) %></span><% } %>
+    </div>
+
+    <div class="lauks">
+        <label for="kategorija_id"><%= t('common.kategorija') %></label>
+        <select id="kategorija_id" name="kategorija_id" required>
+            <option value=""><%= t('ieraksti.select_category') %></option>
+            <% kategorijas.forEach(function (k) { %>
+                <option value="<%= k.kategorija_id %>" <%= String(forma.kategorija_id) === String(k.kategorija_id) ? 'selected' : '' %>><%= k.nosaukums %></option>
+            <% }) %>
+        </select>
+        <% if (kludas.kategorija_id) { %><span class="lauka-kluda"><%= t(kludas.kategorija_id) %></span><% } %>
+    </div>
+
+    <div class="lauks">
+        <label for="saturs"><%= t('common.saturs') %></label>
+        <textarea id="saturs" name="saturs" required minlength="10" maxlength="20000"><%= forma.saturs %></textarea>
+        <span class="palidzigais"><%= t('ieraksti.content_help') %></span>
+        <% if (kludas.saturs) { %><span class="lauka-kluda"><%= t(kludas.saturs) %></span><% } %>
+
+        <% var aiI18n = JSON.stringify({
+            need_more_text: t('ai.need_more_text'),
+            processing: t('ai.processing'),
+            error_generic: t('ai.error_generic'),
+            network_error: t('ai.network_error'),
+            ready: t('ai.ready'),
+            local_fallback: t('ai.local_fallback'),
+            content_replaced: t('ai.content_replaced'),
+            title_replaced: t('ai.title_replaced')
+        }); %>
+        <div class="ai-bloks" data-ai data-ai-i18n='<%= aiI18n.replace(/\x27/g, "&#39;") %>'>
+            <h3><%= t('ai.title') %></h3>
+            <p class="palidzigais"><%= t('ai.lead') %></p>
+            <div class="formas-darbibas">
+                <button type="button" class="poga maza" data-ai-darbiba="uzlabot"><%= t('ai.improve') %></button>
+                <button type="button" class="poga maza" data-ai-darbiba="virsraksts"><%= t('ai.title_btn') %></button>
+                <span class="palidzigais" data-ai-statuss aria-live="polite"></span>
+            </div>
+            <div class="ai-rezultats" data-ai-rezultats hidden></div>
+            <div class="formas-darbibas" data-ai-darbibas hidden>
+                <button type="button" class="poga maza primara" data-ai-piemerot><%= t('ai.apply_content') %></button>
+                <button type="button" class="poga maza" data-ai-piemerot-virsrakstam><%= t('ai.apply_title') %></button>
+                <button type="button" class="poga maza" data-ai-aizvert><%= t('ai.close') %></button>
+            </div>
+        </div>
+    </div>
+
+    <% if (redigetId) { %>
+        <div class="lauks">
+            <label for="statuss"><%= t('common.statuss') %></label>
+            <select id="statuss" name="statuss">
+                <option value="publicets" <%= forma.statuss === 'publicets' ? 'selected' : '' %>><%= t('ieraksti.status_published') %></option>
+                <option value="melnraksts" <%= forma.statuss === 'melnraksts' ? 'selected' : '' %>><%= t('ieraksti.status_draft') %></option>
+                <% if (typeof irAdmins !== 'undefined' && irAdmins) { %>
+                    <option value="slegts" <%= forma.statuss === 'slegts' ? 'selected' : '' %>><%= t('ieraksti.status_closed') %></option>
+                <% } %>
+            </select>
+        </div>
+    <% } %>
+
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= redigetId ? t('common.saglabat') : t('common.publicet') %></button>
+        <a href="<%= redigetId ? '/ieraksti/' + redigetId : '/ieraksti' %>" class="poga"><%= t('common.atcelt') %></a>
+    </div>
+</form>
+
+<%- include('../partials/footer') %>

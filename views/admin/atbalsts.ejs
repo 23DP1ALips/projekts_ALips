@@ -1,0 +1,62 @@
+<%- include('../partials/header') %>
+<%- include('partials/admin-nav') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('admin_atbalsts.title') %></h1>
+</div>
+
+<form action="/admin/atbalsts" method="get" class="filtri" style="grid-template-columns: 1fr auto;">
+    <div class="lauks">
+        <label for="statuss"><%= t('admin_atbalsts.filter_label') %></label>
+        <select id="statuss" name="statuss">
+            <option value=""><%= t('admin_atbalsts.filter_all') %></option>
+            <option value="jauns" <%= filtrs === 'jauns' ? 'selected' : '' %>><%= t('atbalsts.status_jauns') %></option>
+            <option value="atbildets" <%= filtrs === 'atbildets' ? 'selected' : '' %>><%= t('atbalsts.status_atbildets') %></option>
+            <option value="aizverts" <%= filtrs === 'aizverts' ? 'selected' : '' %>><%= t('atbalsts.status_aizverts') %></option>
+        </select>
+    </div>
+    <div class="lauks">
+        <button type="submit" class="poga primara"><%= t('common.filtret') %></button>
+    </div>
+</form>
+
+<div class="tabula-iesainojums">
+    <table class="datu-tabula">
+        <thead>
+            <tr>
+                <th scope="col"><%- sortLink('id', t('admin_atbalsts.table_id'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('nosutitaja_vards', t('admin_atbalsts.table_from'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('nosutitaja_epasts', t('admin_atbalsts.table_email'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('tema', t('admin_atbalsts.table_subject'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('statuss', t('admin_atbalsts.table_status'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('izveidots', t('admin_atbalsts.table_date'), sortInfo) %></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (!pieprasijumi.length) { %>
+                <tr><td colspan="7" style="text-align:center;"><%= t('atbalsts.no_requests') %></td></tr>
+            <% } %>
+            <% pieprasijumi.forEach(function (p) { %>
+                <tr>
+                    <td><%= p.atbalsts_id %></td>
+                    <td>
+                        <%= p.nosutitaja_vards %>
+                        <% if (p.lietotajvards) { %>
+                            (<a href="/lietotaji/<%= p.lietotajs_id %>"><%= p.lietotajvards %></a>)
+                        <% } else { %>
+                            <span class="palidzigais"><%= t('admin_atbalsts.no_account') %></span>
+                        <% } %>
+                    </td>
+                    <td><%= p.nosutitaja_epasts %></td>
+                    <td><%= format.saisinat(p.tema, 80) %></td>
+                    <td><span class="marka <%= p.statuss === 'atbildets' ? 'aktivs' : (p.statuss === 'aizverts' ? 'blokets' : '') %>"><%= t('atbalsts.status_' + p.statuss) %></span></td>
+                    <td><%= format.formatDatums(p.izveidots) %></td>
+                    <td><a href="/admin/atbalsts/<%= p.atbalsts_id %>" class="poga maza primara"><%= t('admin_atbalsts.view') %></a></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>

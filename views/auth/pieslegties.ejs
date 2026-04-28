@@ -1,0 +1,35 @@
+<%- include('../partials/header') %>
+
+<form action="/pieslegties" method="post" class="forma" novalidate>
+    <h1><%= t('auth.login_title') %></h1>
+
+    <% if (kludas.visparigs) { %>
+        <div class="zinojums kluda" role="alert"><%= t(kludas.visparigs) %></div>
+    <% } %>
+
+    <% if (nakamais) { %>
+        <input type="hidden" name="nakamais" value="<%= nakamais %>">
+    <% } %>
+
+    <div class="lauks">
+        <label for="identifikators"><%= t('auth.username_or_email') %></label>
+        <input id="identifikators" name="identifikators" type="text" required autocomplete="username" value="<%= forma.identifikators %>">
+        <% if (kludas.identifikators) { %><span class="lauka-kluda"><%= t(kludas.identifikators) %></span><% } %>
+    </div>
+
+    <div class="lauks">
+        <label for="parole"><%= t('auth.password') %></label>
+        <input id="parole" name="parole" type="password" required autocomplete="current-password">
+        <% if (kludas.parole) { %><span class="lauka-kluda"><%= t(kludas.parole) %></span><% } %>
+    </div>
+
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= t('auth.login_title') %></button>
+        <a href="/registreties" class="poga saite"><%= t('auth.no_account') %></a>
+    </div>
+    <div class="formas-darbibas" style="margin-top: 8px;">
+        <a href="/aizmirsu-paroli" class="poga saite"><%= t('auth.forgot_password') %></a>
+    </div>
+</form>
+
+<%- include('../partials/footer') %>

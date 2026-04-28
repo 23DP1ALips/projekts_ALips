@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+<%- include('partials/admin-nav') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('admin.users') %></h1>
+</div>
+
+<form action="/admin/lietotaji" method="get" class="filtri" role="search" style="grid-template-columns: 1fr auto;">
+    <div class="lauks">
+        <label for="meklesana"><%= t('admin.users_search_label') %></label>
+        <input id="meklesana" name="meklesana" type="search" value="<%= meklesana %>">
+    </div>
+    <div class="lauks">
+        <button type="submit" class="poga primara"><%= t('common.meklet') %></button>
+    </div>
+</form>
+
+<div class="tabula-iesainojums">
+    <table class="datu-tabula">
+        <thead>
+            <tr>
+                <th scope="col"><%- sortLink('id', t('common.id'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('lietotajvards', t('auth.username'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('epasts', t('auth.email'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('loma', t('common.loma'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('statuss', t('admin.users_table_status'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('registracijas_datums', t('admin.users_table_registered'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('ierakstu_skaits', t('admin.users_table_counts'), sortInfo) %></th>
+                <th scope="col"><%= t('common.darbibas') %></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% lietotaji.forEach(function (l) { %>
+                <tr>
+                    <td><%= l.lietotajs_id %></td>
+                    <td><a href="/lietotaji/<%= l.lietotajs_id %>"><%= l.lietotajvards %></a></td>
+                    <td><%= l.epasts %></td>
+                    <td><span class="marka <%= l.loma === 'administrators' ? 'administrators' : '' %>"><%= l.loma %></span></td>
+                    <td><span class="marka <%= l.statuss === 'aktivs' ? 'aktivs' : 'blokets' %>"><%= l.statuss %></span></td>
+                    <td><%= format.formatDatums(l.registracijas_datums) %></td>
+                    <td><%= l.ierakstu_skaits %> / <%= l.komentaru_skaits %></td>
+                    <td>
+                        <div class="darbibu-stabins">
+                            <% if (l.lietotajs_id !== lietotajs.lietotajs_id) { %>
+                                <% if (l.statuss === 'aktivs') { %>
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/statuss" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.block_confirm', { user: l.lietotajvards }) %>">
+                                        <input type="hidden" name="statuss" value="blokets">
+                                        <button type="submit" class="poga maza bistama"><%= t('admin.block') %></button>
+                                    </form>
+                                <% } else { %>
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/statuss" method="post" class="iekslinis">
+                                        <input type="hidden" name="statuss" value="aktivs">
+                                        <button type="submit" class="poga maza"><%= t('admin.unblock') %></button>
+                                    </form>
+                                <% } %>
+                                <% if (l.loma === 'lietotajs') { %>
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/loma" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.make_admin_confirm') %>">
+                                        <input type="hidden" name="loma" value="administrators">
+                                        <button type="submit" class="poga maza"><%= t('admin.make_admin') %></button>
+                                    </form>
+                                <% } else { %>
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/loma" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.remove_admin_confirm') %>">
+                                        <input type="hidden" name="loma" value="lietotajs">
+                                        <button type="submit" class="poga maza"><%= t('admin.remove_admin') %></button>
+                                    </form>
+                                <% } %>
+                            <% } else { %>
+                                <span class="palidzigais"><%= t('common.lietotajs_jus') %></span>
+                            <% } %>
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+    <h1><%= t('home.h1') %></h1>
+    <p><%= t('home.lead') %></p>
+    <div class="hero-darbibas">
+        <a href="/ieraksti" class="poga primara liela"><%= t('home.browse') %></a>
+        <% if (!lietotajs) { %>
+            <a href="/registreties" class="poga liela"><%= t('home.register') %></a>
+        <% } else { %>
+            <a href="/ieraksti/jauns" class="poga liela"><%= t('home.new_post') %></a>
+        <% } %>
+    </div>
+</section>
+
+<section class="iezimes">
+    <article class="karte">
+        <h2><%= t('home.feature1_title') %></h2>
+        <p><%= t('home.feature1_text') %></p>
+    </article>
+    <article class="karte">
+        <h2><%= t('home.feature2_title') %></h2>
+        <p><%= t('home.feature2_text') %></p>
+    </article>
+    <article class="karte">
+        <h2><%= t('home.feature3_title') %></h2>
+        <p><%= t('home.feature3_text') %></p>
+    </article>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,94 @@
+<%- include('../partials/header') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('ieraksti.page_title') %></h1>
+    <% if (lietotajs) { %>
+        <a href="/ieraksti/jauns" class="poga primara"><%= t('ieraksti.new_title') %></a>
+    <% } %>
+</div>
+
+<form action="/ieraksti" method="get" class="filtri" role="search" aria-label="<%= t('ieraksti.search_aria') %>">
+    <div class="lauks">
+        <label for="meklesana"><%= t('ieraksti.search_label') %></label>
+        <input id="meklesana" name="meklesana" type="search" value="<%= filtri.meklesana %>" placeholder="<%= t('ieraksti.search_placeholder') %>">
+    </div>
+    <div class="lauks">
+        <label for="kategorija"><%= t('ieraksti.category_label') %></label>
+        <select id="kategorija" name="kategorija">
+            <option value=""><%= t('ieraksti.category_all') %></option>
+            <% kategorijas.forEach(function (k) { %>
+                <option value="<%= k.kategorija_id %>" <%= filtri.kategorijaId === k.kategorija_id ? 'selected' : '' %>><%= k.nosaukums %></option>
+            <% }) %>
+        </select>
+    </div>
+    <div class="lauks">
+        <label for="kartosana"><%= t('ieraksti.sort_label') %></label>
+        <select id="kartosana" name="kartosana">
+            <option value="jaunakie" <%= filtri.kartosana === 'jaunakie' ? 'selected' : '' %>><%= t('ieraksti.sort_newest') %></option>
+            <option value="vecakie" <%= filtri.kartosana === 'vecakie' ? 'selected' : '' %>><%= t('ieraksti.sort_oldest') %></option>
+            <option value="visvairak_balsoti" <%= filtri.kartosana === 'visvairak_balsoti' ? 'selected' : '' %>><%= t('ieraksti.sort_top_voted') %></option>
+            <option value="populaarakie" <%= filtri.kartosana === 'populaarakie' ? 'selected' : '' %>><%= t('ieraksti.sort_popular') %></option>
+            <option value="alfabetiski" <%= filtri.kartosana === 'alfabetiski' ? 'selected' : '' %>><%= t('ieraksti.sort_alpha') %></option>
+        </select>
+    </div>
+    <div class="lauks">
+        <button type="submit" class="poga primara"><%= t('common.filtret') %></button>
+    </div>
+</form>
+
+<p class="palidzigais"><%= t('ieraksti.result_count', { count: kopaSkaits }) %></p>
+
+<% if (!ieraksti.length) { %>
+    <div class="karte"><p><%= t('ieraksti.empty') %></p></div>
+<% } else { %>
+    <div class="ierakstu-saraksts">
+        <% ieraksti.forEach(function (i) { %>
+            <article class="ieraksta-rinda">
+                <h2><a href="/ieraksti/<%= i.ieraksts_id %>"><%= i.virsraksts %></a></h2>
+                <div class="ieraksta-meta">
+                    <span class="marka"><%= i.kategorijas_nosaukums %></span>
+                    <span><a href="/lietotaji/<%= i.autora_id %>"><%= i.autora_vards %></a></span>
+                    <span><%= format.formatDatums(i.izveidots) %></span>
+                    <span title="<%= t('balsojums.count', { count: i.balsu_skaits }) %>">▲ <%= i.balsu_skaits %></span>
+                    <span><%= t('ieraksti.comments_count', { count: i.komentaru_skaits }) %></span>
+                </div>
+                <p class="ieraksta-izvilkums"><%= format.saisinat(i.saturs, 220) %></p>
+            </article>
+        <% }) %>
+    </div>
+
+    <% if (kopaLapas > 1) { %>
+        <nav class="lappuses" aria-label="<%= t('ieraksti.page_nav_aria') %>">
+            <% function adrese(lapaNr) {
+                const params = new URLSearchParams();
+                if (filtri.meklesana) params.set('meklesana', filtri.meklesana);
+                if (filtri.kategorijaId) params.set('kategorija', filtri.kategorijaId);
+                if (filtri.kartosana && filtri.kartosana !== 'jaunakie') params.set('kartosana', filtri.kartosana);
+                if (lapaNr > 1) params.set('lapa', lapaNr);
+                const q = params.toString();
+                return '/ieraksti' + (q ? '?' + q : '');
+            } %>
+            <% if (lapa > 1) { %>
+                <a href="<%= adrese(lapa - 1) %>" rel="prev"><%= t('ieraksti.prev') %></a>
+            <% } else { %>
+                <span class="atspejota"><%= t('ieraksti.prev') %></span>
+            <% } %>
+
+            <% for (let n = 1; n <= kopaLapas; n++) { %>
+                <% if (n === lapa) { %>
+                    <span class="pasreizeja" aria-current="page"><%= n %></span>
+                <% } else { %>
+                    <a href="<%= adrese(n) %>"><%= n %></a>
+                <% } %>
+            <% } %>
+
+            <% if (lapa < kopaLapas) { %>
+                <a href="<%= adrese(lapa + 1) %>" rel="next"><%= t('ieraksti.next') %></a>
+            <% } else { %>
+                <span class="atspejota"><%= t('ieraksti.next') %></span>
+            <% } %>
+        </nav>
+    <% } %>
+<% } %>
+
+<%- include('../partials/footer') %>

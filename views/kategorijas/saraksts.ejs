@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('kategorijas.title') %></h1>
+    <% if (lietotajs) { %>
+        <a href="/kategorijas/jauna" class="poga primara"><%= t('kategorijas.create_button') %></a>
+    <% } %>
+</div>
+
+<% if (!kategorijas.length) { %>
+    <p><%= t('kategorijas.empty') %></p>
+<% } else { %>
+    <div class="kategoriju-režģis">
+        <% kategorijas.forEach(function (k) { %>
+            <article class="kategorijas-karte">
+                <h2><a href="/ieraksti?kategorija=<%= k.kategorija_id %>"><%= k.nosaukums %></a></h2>
+                <% if (k.apraksts) { %>
+                    <p><%= k.apraksts %></p>
+                <% } %>
+                <p class="kategorijas-skaits"><%= t('kategorijas.post_count', { count: k.ierakstu_skaits }) %></p>
+            </article>
+        <% }) %>
+    </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,27 @@
+<%- include('../partials/header') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= pieprasijums.tema %></h1>
+    <a href="/atbalsts" class="poga"><%= t('admin_atbalsts.back') %></a>
+</div>
+
+<article class="ieraksta-saturs">
+    <p class="ieraksta-meta">
+        <%= format.formatDatums(pieprasijums.izveidots) %> ·
+        <%= pieprasijums.nosutitaja_vards %> &lt;<%= pieprasijums.nosutitaja_epasts %>&gt; ·
+        <span class="marka <%= pieprasijums.statuss === 'atbildets' ? 'aktivs' : (pieprasijums.statuss === 'aizverts' ? 'blokets' : '') %>"><%= t('atbalsts.status_' + pieprasijums.statuss) %></span>
+    </p>
+    <h2><%= t('atbalsts.your_message') %></h2>
+    <div><%- format.nl2br(pieprasijums.zinojums) %></div>
+
+    <% if (pieprasijums.atbilde) { %>
+        <hr style="margin: 24px 0;">
+        <h2><%= t('atbalsts.reply_from', { user: pieprasijums.atbildejusais || '—' }) %></h2>
+        <p class="ieraksta-meta"><%= format.formatDatums(pieprasijums.atbildets) %></p>
+        <div><%- format.nl2br(pieprasijums.atbilde) %></div>
+    <% } else { %>
+        <p class="palidzigais" style="margin-top: 16px;"><%= t('atbalsts.no_reply_yet') %></p>
+    <% } %>
+</article>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+
+<section class="profila-galva">
+    <h1><%= profils.lietotajvards %></h1>
+    <p class="meta">
+        <%= t('common.loma') %>: <span class="marka <%= profils.loma === 'administrators' ? 'administrators' : '' %>"><%= profils.loma %></span>
+        · <%= t('profils.registered_at', { date: format.formatDatums(profils.registracijas_datums) }) %>
+        <% if (profils.statuss !== 'aktivs') { %>
+            · <span class="marka blokets"><%= profils.statuss %></span>
+        <% } %>
+    </p>
+    <p class="meta"><%= t('profils.stats', { posts: statistika.ierakstu_skaits, comments: statistika.komentaru_skaits }) %></p>
+    <% if (profils.profila_apraksts) { %>
+        <p><%= profils.profila_apraksts %></p>
+    <% } else { %>
+        <p class="palidzigais"><%= t('profils.no_description') %></p>
+    <% } %>
+    <% if (lietotajs && lietotajs.lietotajs_id !== profils.lietotajs_id) { %>
+        <a href="/zinas/jauna?lietotajs=<%= profils.lietotajvards %>" class="poga primara"><%= t('profils.send_message') %></a>
+    <% } %>
+</section>
+
+<h2><%= t('profils.recent_posts') %></h2>
+<% if (!ieraksti.length) { %>
+    <p><%= t('profils.no_posts') %></p>
+<% } else { %>
+    <div class="ierakstu-saraksts">
+        <% ieraksti.forEach(function (i) { %>
+            <article class="ieraksta-rinda">
+                <h3 style="margin: 0 0 6px;"><a href="/ieraksti/<%= i.ieraksts_id %>"><%= i.virsraksts %></a></h3>
+                <div class="ieraksta-meta">
+                    <span class="marka"><%= i.kategorijas_nosaukums %></span>
+                    <span><%= format.formatDatums(i.izveidots) %></span>
+                    <span><%= t('ieraksti.comments_count', { count: i.komentaru_skaits }) %></span>
+                </div>
+            </article>
+        <% }) %>
+    </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,82 @@
+<%- include('../partials/header') %>
+<%- include('partials/admin-nav') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('admin.categories') %></h1>
+</div>
+
+<form action="<%= redigetId ? '/admin/kategorijas/' + redigetId : '/admin/kategorijas' %>" method="post" class="forma plata">
+    <h2><%= redigetId ? t('admin.categories_edit') : t('admin.categories_add') %></h2>
+
+    <div class="lauks">
+        <label for="nosaukums"><%= t('common.nosaukums') %></label>
+        <input id="nosaukums" name="nosaukums" type="text" required minlength="2" maxlength="80" value="<%= forma.nosaukums %>">
+        <% if (kludas.nosaukums) { %><span class="lauka-kluda"><%= t(kludas.nosaukums) %></span><% } %>
+    </div>
+
+    <div class="lauks">
+        <label for="apraksts"><%= t('common.apraksts') %></label>
+        <input id="apraksts" name="apraksts" type="text" maxlength="255" value="<%= forma.apraksts %>">
+    </div>
+
+    <div class="lauks">
+        <label for="secibas_nr"><%= t('admin.categories_seq') %></label>
+        <input id="secibas_nr" name="secibas_nr" type="number" min="0" value="<%= forma.secibas_nr %>">
+        <% if (kludas.secibas_nr) { %><span class="lauka-kluda"><%= t(kludas.secibas_nr) %></span><% } %>
+    </div>
+
+    <% if (redigetId) { %>
+        <div class="lauks">
+            <label>
+                <input type="checkbox" name="aktiva" value="1" <%= forma.aktiva ? 'checked' : '' %>>
+                <%= t('admin.categories_active') %>
+            </label>
+        </div>
+    <% } %>
+
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= redigetId ? t('common.saglabat') : t('common.pievienot') %></button>
+        <% if (redigetId) { %>
+            <a href="/admin/kategorijas" class="poga"><%= t('common.atcelt') %></a>
+        <% } %>
+    </div>
+</form>
+
+<h2><%= t('admin.categories_existing') %></h2>
+<div class="tabula-iesainojums">
+    <table class="datu-tabula">
+        <thead>
+            <tr>
+                <th scope="col"><%- sortLink('id', t('common.id'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('nosaukums', t('common.nosaukums'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('apraksts', t('common.apraksts'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('secibas_nr', t('admin.categories_table_seq'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('aktiva', t('admin.categories_table_active'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('ierakstu_skaits', t('admin.categories_table_posts'), sortInfo) %></th>
+                <th scope="col"><%= t('common.darbibas') %></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% kategorijas.forEach(function (k) { %>
+                <tr>
+                    <td><%= k.kategorija_id %></td>
+                    <td><%= k.nosaukums %></td>
+                    <td><%= k.apraksts || '' %></td>
+                    <td><%= k.secibas_nr %></td>
+                    <td><%= k.aktiva ? t('common.ja') : t('common.ne') %></td>
+                    <td><%= k.ierakstu_skaits %></td>
+                    <td>
+                        <div class="darbibu-stabins">
+                            <a href="/admin/kategorijas/<%= k.kategorija_id %>/rediget" class="poga maza"><%= t('common.rediget') %></a>
+                            <form action="/admin/kategorijas/<%= k.kategorija_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.delete_category_confirm', { name: k.nosaukums }) %>">
+                                <button type="submit" class="poga maza bistama"><%= t('common.dzest') %></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>

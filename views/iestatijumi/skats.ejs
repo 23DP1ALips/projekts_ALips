@@ -1,0 +1,74 @@
+<%- include('../partials/header') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('iestatijumi.title') %></h1>
+</div>
+
+<p class="palidzigais"><%= t('iestatijumi.lead') %></p>
+
+<form action="/iestatijumi" method="post" class="forma plata">
+    <h2><%= t('iestatijumi.appearance') %></h2>
+
+    <div class="lauks">
+        <label for="valoda"><%= t('iestatijumi.language_label') %></label>
+        <select id="valoda" name="valoda">
+            <% atbalstitasValodas.forEach(function (kods) { %>
+                <option value="<%= kods %>" <%= iest.valoda === kods ? 'selected' : '' %>><%= t('lang.' + kods) %></option>
+            <% }) %>
+        </select>
+    </div>
+
+    <div class="lauks">
+        <label><%= t('iestatijumi.theme_label') %></label>
+        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
+            <label><input type="radio" name="tema" value="auto" <%= iest.tema === 'auto' ? 'checked' : '' %>> <%= t('tema.auto') %></label>
+            <label><input type="radio" name="tema" value="gaisa" <%= iest.tema === 'gaisa' ? 'checked' : '' %>> <%= t('tema.gaisa') %></label>
+            <label><input type="radio" name="tema" value="tumsa" <%= iest.tema === 'tumsa' ? 'checked' : '' %>> <%= t('tema.tumsa') %></label>
+        </div>
+    </div>
+
+    <h2><%= t('iestatijumi.display') %></h2>
+
+    <div class="lauks">
+        <label for="lapas_lielums"><%= t('iestatijumi.posts_per_page') %></label>
+        <select id="lapas_lielums" name="lapas_lielums">
+            <option value="10" <%= iest.lapas_lielums === 10 ? 'selected' : '' %>>10</option>
+            <option value="20" <%= iest.lapas_lielums === 20 ? 'selected' : '' %>>20</option>
+            <option value="50" <%= iest.lapas_lielums === 50 ? 'selected' : '' %>>50</option>
+        </select>
+    </div>
+
+    <div class="lauks">
+        <label for="kartosana"><%= t('iestatijumi.default_sort') %></label>
+        <select id="kartosana" name="kartosana">
+            <option value="jaunakie" <%= iest.kartosana === 'jaunakie' ? 'selected' : '' %>><%= t('ieraksti.sort_newest') %></option>
+            <option value="vecakie" <%= iest.kartosana === 'vecakie' ? 'selected' : '' %>><%= t('ieraksti.sort_oldest') %></option>
+            <option value="populaarakie" <%= iest.kartosana === 'populaarakie' ? 'selected' : '' %>><%= t('ieraksti.sort_popular') %></option>
+            <option value="alfabetiski" <%= iest.kartosana === 'alfabetiski' ? 'selected' : '' %>><%= t('ieraksti.sort_alpha') %></option>
+        </select>
+    </div>
+
+    <h2><%= t('iestatijumi.motion') %></h2>
+    <div class="lauks">
+        <label>
+            <input type="checkbox" name="samazinatas_animacijas" value="1" <%= iest.samazinatas_animacijas ? 'checked' : '' %>>
+            <%= t('iestatijumi.reduced_motion') %>
+        </label>
+        <span class="palidzigais"><%= t('iestatijumi.reduced_motion_help') %></span>
+    </div>
+
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= t('iestatijumi.save') %></button>
+        <form action="/iestatijumi/atjaunot" method="post" class="iekslinis" data-apstiprinat="<%= t('iestatijumi.reset') %>?">
+            <button type="submit" class="poga"><%= t('iestatijumi.reset') %></button>
+        </form>
+    </div>
+</form>
+
+<% if (lietotajs) { %>
+    <h2><%= t('iestatijumi.account') %></h2>
+    <p><%= t('iestatijumi.account_link') %></p>
+    <a href="/profils" class="poga primara"><%= t('profils.my_title') %></a>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,9 @@
+<nav class="galvena-navigacija" aria-label="<%= t('admin.nav_aria') %>" style="margin: 16px 0; padding: 8px; background: var(--krasa-virsma); border: 1px solid var(--krasa-mala); border-radius: var(--radius);">
+    <a href="/admin" class="<%= path === '/admin' ? 'aktivs' : '' %>"><%= t('admin.overview') %></a>
+    <a href="/admin/lietotaji" class="<%= path && path.startsWith('/admin/lietotaji') ? 'aktivs' : '' %>"><%= t('admin.users') %></a>
+    <a href="/admin/kategorijas" class="<%= path && path.startsWith('/admin/kategorijas') ? 'aktivs' : '' %>"><%= t('admin.categories') %></a>
+    <a href="/admin/saturs" class="<%= path && path.startsWith('/admin/saturs') ? 'aktivs' : '' %>"><%= t('admin.content') %></a>
+    <a href="/admin/atbalsts" class="<%= path && path.startsWith('/admin/atbalsts') ? 'aktivs' : '' %>"><%= t('nav.atbalsts') %></a>
+    <a href="/admin/ai-zurnals" class="<%= path && path.startsWith('/admin/ai-zurnals') ? 'aktivs' : '' %>"><%= t('admin_ai.title') %></a>
+    <a href="/admin/audita-zurnals" class="<%= path && path.startsWith('/admin/audita-zurnals') ? 'aktivs' : '' %>"><%= t('admin.audit') %></a>
+</nav>

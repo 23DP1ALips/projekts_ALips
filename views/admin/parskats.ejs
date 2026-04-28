@@ -1,0 +1,85 @@
+<%- include('../partials/header') %>
+<%- include('partials/admin-nav') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('admin.overview') %></h1>
+</div>
+
+<section class="statistikas-režģis" aria-label="<%= t('admin.stats_aria') %>">
+    <article class="stat-karte"><div class="skaits"><%= skaiti.lietotaju_skaits %></div><div class="nosaukums"><%= t('admin.stat_users') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= skaiti.aktivu_skaits %></div><div class="nosaukums"><%= t('admin.stat_active') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= skaiti.ierakstu_skaits %></div><div class="nosaukums"><%= t('admin.stat_posts') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= skaiti.publicetu_skaits %></div><div class="nosaukums"><%= t('admin.stat_published') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= skaiti.komentaru_skaits %></div><div class="nosaukums"><%= t('admin.stat_comments') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= skaiti.kategoriju_skaits %></div><div class="nosaukums"><%= t('admin.stat_categories') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= skaiti.zinu_skaits %></div><div class="nosaukums"><%= t('admin.stat_messages') %></div></article>
+</section>
+
+<div class="zinu-divi-stabini" style="grid-template-columns: 1fr 1fr;">
+    <section>
+        <h2><%= t('admin.posts_per_category') %></h2>
+        <div class="tabula-iesainojums">
+            <table class="datu-tabula">
+                <thead><tr><th scope="col"><%= t('common.kategorija') %></th><th scope="col"><%= t('admin.stat_posts') %></th></tr></thead>
+                <tbody>
+                    <% pa_kategorijam.forEach(function (k) { %>
+                        <tr><td><%= k.nosaukums %></td><td><%= k.skaits %></td></tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h2><%= t('admin.popular_posts') %></h2>
+        <div class="tabula-iesainojums">
+            <table class="datu-tabula">
+                <thead><tr><th scope="col"><%= t('common.ieraksts') %></th><th scope="col"><%= t('admin.stat_comments') %></th></tr></thead>
+                <tbody>
+                    <% populaarakie.forEach(function (p) { %>
+                        <tr><td><a href="/ieraksti/<%= p.ieraksts_id %>"><%= p.virsraksts %></a></td><td><%= p.komentaru_skaits %></td></tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<section style="margin-top: 24px;">
+    <h2><%= t('admin.newest_posts') %></h2>
+    <div class="tabula-iesainojums">
+        <table class="datu-tabula">
+            <thead><tr><th scope="col"><%= t('common.virsraksts') %></th><th scope="col"><%= t('common.autors') %></th><th scope="col"><%= t('common.datums') %></th></tr></thead>
+            <tbody>
+                <% jaunakie_ieraksti.forEach(function (i) { %>
+                    <tr>
+                        <td><a href="/ieraksti/<%= i.ieraksts_id %>"><%= i.virsraksts %></a></td>
+                        <td><%= i.lietotajvards %></td>
+                        <td><%= format.formatDatums(i.izveidots) %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section style="margin-top: 24px;">
+    <h2><%= t('admin.recent_actions') %></h2>
+    <div class="tabula-iesainojums">
+        <table class="datu-tabula">
+            <thead><tr><th scope="col"><%= t('common.datums') %></th><th scope="col"><%= t('common.lietotajs') %></th><th scope="col"><%= t('common.darbibas') %></th><th scope="col"><%= t('admin.audit_table_details') %></th></tr></thead>
+            <tbody>
+                <% audita_pedejie.forEach(function (a) { %>
+                    <tr>
+                        <td><%= format.formatDatums(a.izveidots) %></td>
+                        <td><%= a.lietotajvards || '—' %></td>
+                        <td><%= a.darbiba %></td>
+                        <td><%= a.detalas || (a.objekta_tips ? a.objekta_tips + ' #' + a.objekta_id : '') %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<%- include('../partials/footer') %>

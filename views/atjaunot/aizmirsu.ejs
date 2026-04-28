@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<form action="/aizmirsu-paroli" method="post" class="forma" novalidate>
+    <h1><%= t('paroles_atjaunosana.request_title') %></h1>
+    <p class="palidzigais"><%= t('paroles_atjaunosana.request_lead') %></p>
+
+    <% if (nosutits) { %>
+        <div class="zinojums veiksme" role="status"><%= t('paroles_atjaunosana.request_sent') %></div>
+        <div class="formas-darbibas">
+            <a href="/pieslegties" class="poga"><%= t('paroles_atjaunosana.back_to_login') %></a>
+        </div>
+    <% } else { %>
+        <div class="lauks">
+            <label for="epasts"><%= t('auth.email') %></label>
+            <input id="epasts" name="epasts" type="email" required maxlength="100" autocomplete="email" value="<%= forma.epasts %>">
+            <% if (kludas.epasts) { %><span class="lauka-kluda"><%= t(kludas.epasts) %></span><% } %>
+        </div>
+        <div class="formas-darbibas">
+            <button type="submit" class="poga primara"><%= t('paroles_atjaunosana.send_link') %></button>
+            <a href="/pieslegties" class="poga saite"><%= t('paroles_atjaunosana.back_to_login') %></a>
+        </div>
+    <% } %>
+</form>
+
+<%- include('../partials/footer') %>

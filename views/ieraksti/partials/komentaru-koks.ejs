@@ -1,0 +1,41 @@
+<% komentari.forEach(function (k) { %>
+    <article class="komentars-rinda <%= k.statuss === 'paslepts' ? 'paslepts' : '' %>" data-dziluma="<%= dziluma %>">
+        <div class="komentara-galva">
+            <span><a href="/lietotaji/<%= k.autora_id %>"><%= k.autora_vards %></a> · <%= format.formatDatums(k.izveidots) %></span>
+            <% if (lietotajs && (lietotajs.lietotajs_id === k.autora_id || irAdmins)) { %>
+                <form action="/komentari/<%= k.komentars_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('komentari.delete_confirm') %>">
+                    <button type="submit" class="poga maza bistama"><%= t('common.dzest') %></button>
+                </form>
+            <% } %>
+        </div>
+        <div><%- format.nl2br(k.teksts) %></div>
+        <% if (k.statuss === 'paslepts') { %>
+            <p class="palidzigais"><%= t('komentari.hidden_note') %></p>
+        <% } %>
+
+        <% if (lietotajs && ieraksts.statuss !== 'slegts') { %>
+            <div class="komentara-darbibas">
+                <button type="button" class="poga saite maza" data-atbildet-uz="<%= k.komentars_id %>">
+                    <%= t('komentari.reply') %>
+                </button>
+            </div>
+            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/komentari" method="post" class="atbildes-forma" id="atbildes-forma-<%= k.komentars_id %>" hidden novalidate>
+                <input type="hidden" name="vecaks_komentars_id" value="<%= k.komentars_id %>">
+                <div class="lauks">
+                    <label for="atbildes-teksts-<%= k.komentars_id %>" class="palidzigais"><%= t('komentari.reply_to', { user: k.autora_vards }) %></label>
+                    <textarea id="atbildes-teksts-<%= k.komentars_id %>" name="teksts" required minlength="2" maxlength="2000" rows="3"></textarea>
+                </div>
+                <div class="formas-darbibas">
+                    <button type="submit" class="poga primara maza"><%= t('komentari.reply_submit') %></button>
+                    <button type="button" class="poga maza" data-atcelt-atbildi="<%= k.komentars_id %>"><%= t('komentari.reply_cancel') %></button>
+                </div>
+            </form>
+        <% } %>
+
+        <% if (k.atbildes && k.atbildes.length) { %>
+            <div class="atbilzu-saraksts">
+                <%- include('komentaru-koks', { komentari: k.atbildes, dziluma: dziluma + 1, ieraksts: ieraksts, lietotajs: lietotajs, irAdmins: irAdmins }) %>
+            </div>
+        <% } %>
+    </article>
+<% }) %>

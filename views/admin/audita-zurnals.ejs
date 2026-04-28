@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+<%- include('partials/admin-nav') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('admin.audit') %></h1>
+</div>
+
+<form action="/admin/audita-zurnals" method="get" class="filtri" style="grid-template-columns: 1fr auto;">
+    <div class="lauks">
+        <label for="darbiba"><%= t('admin.audit_filter_label') %></label>
+        <select id="darbiba" name="darbiba">
+            <option value=""><%= t('admin.audit_filter_all') %></option>
+            <% darbibas.forEach(function (d) { %>
+                <option value="<%= d %>" <%= filtrs === d ? 'selected' : '' %>><%= d %></option>
+            <% }) %>
+        </select>
+    </div>
+    <div class="lauks">
+        <button type="submit" class="poga primara"><%= t('common.filtret') %></button>
+    </div>
+</form>
+
+<div class="tabula-iesainojums">
+    <table class="datu-tabula">
+        <thead>
+            <tr>
+                <th scope="col"><%- sortLink('id', t('common.id'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('izveidots', t('common.datums'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('lietotajvards', t('common.lietotajs'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('darbiba', t('common.darbibas'), sortInfo) %></th>
+                <th scope="col"><%= t('admin.audit_table_object') %></th>
+                <th scope="col"><%= t('admin.audit_table_details') %></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (!ieraksti.length) { %>
+                <tr><td colspan="6" style="text-align: center;"><%= t('admin.audit_empty') %></td></tr>
+            <% } %>
+            <% ieraksti.forEach(function (a) { %>
+                <tr>
+                    <td><%= a.audita_id %></td>
+                    <td><%= format.formatDatums(a.izveidots) %></td>
+                    <td><%= a.lietotajvards || '—' %></td>
+                    <td><%= a.darbiba %></td>
+                    <td><%= a.objekta_tips ? a.objekta_tips + ' #' + a.objekta_id : '—' %></td>
+                    <td><%= a.detalas || '' %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>

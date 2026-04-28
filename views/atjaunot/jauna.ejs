@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<form action="/atjaunot-paroli/<%= zetons %>" method="post" class="forma" novalidate>
+    <h1><%= t('paroles_atjaunosana.new_title') %></h1>
+    <p class="palidzigais"><%= t('paroles_atjaunosana.new_lead') %></p>
+
+    <div class="lauks">
+        <label for="parole"><%= t('paroles_atjaunosana.new_password') %></label>
+        <input id="parole" name="parole" type="password" required minlength="8" maxlength="100" autocomplete="new-password" aria-describedby="palidzigais-parole">
+        <span id="palidzigais-parole" class="palidzigais"><%= t('auth.password_help') %></span>
+        <% if (kludas.parole) { %><span class="lauka-kluda"><%= t(kludas.parole) %></span><% } %>
+    </div>
+
+    <div class="lauks">
+        <label for="paroleApstiprinata"><%= t('paroles_atjaunosana.repeat_new_password') %></label>
+        <input id="paroleApstiprinata" name="paroleApstiprinata" type="password" required minlength="8" maxlength="100" autocomplete="new-password">
+        <% if (kludas.paroleApstiprinata) { %><span class="lauka-kluda"><%= t(kludas.paroleApstiprinata) %></span><% } %>
+    </div>
+
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= t('paroles_atjaunosana.save_new') %></button>
+    </div>
+</form>
+
+<%- include('../partials/footer') %>

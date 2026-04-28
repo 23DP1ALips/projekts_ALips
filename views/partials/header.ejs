@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1f6feb">
+    <meta name="description" content="<%= t('home.lead') %>">
+    <title><%= pageTitle %> · Forums</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <script>
+        (function(){try{var t=localStorage.getItem('tema');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+    </script>
+</head>
+<body class="<%= iestatijumi && iestatijumi.samazinatas_animacijas ? 'samazinatas-animacijas' : '' %>">
+    <a class="skip-link" href="#galvenais"><%= t('nav.parlekt_uz_saturu') %></a>
+    <header class="virsraksta-josla" role="banner">
+        <div class="ietvars galva">
+            <a class="logo" href="/" aria-label="<%= t('nav.saakums') %>">
+                <span class="logo-marka" aria-hidden="true">F</span>
+                <span>Forums</span>
+            </a>
+            <nav class="galvena-navigacija" aria-label="<%= t('nav.galvena') %>">
+                <a href="/ieraksti" class="<%= path && path.startsWith('/ieraksti') ? 'aktivs' : '' %>"><%= t('nav.ieraksti') %></a>
+                <a href="/kategorijas" class="<%= path && path.startsWith('/kategorijas') ? 'aktivs' : '' %>"><%= t('nav.kategorijas') %></a>
+                <a href="/atbalsts" class="<%= path && path.startsWith('/atbalsts') ? 'aktivs' : '' %>"><%= t('nav.atbalsts') %></a>
+                <% if (lietotajs) { %>
+                    <a href="/zinas" class="<%= path && path.startsWith('/zinas') ? 'aktivs' : '' %>">
+                        <%= t('nav.zinas') %><% if (nelasitasZinas > 0) { %> <span class="marka administrators" aria-label="<%= t('nav.nelasitas_zinas', { count: nelasitasZinas }) %>"><%= nelasitasZinas %></span><% } %>
+                    </a>
+                    <a href="/pazinojumi" class="<%= path && path.startsWith('/pazinojumi') ? 'aktivs' : '' %>">
+                        <%= t('nav.pazinojumi') %><% if (nelasitiPazinojumi > 0) { %> <span class="marka administrators" aria-label="<%= t('nav.nelasiti_pazinojumi', { count: nelasitiPazinojumi }) %>"><%= nelasitiPazinojumi %></span><% } %>
+                    </a>
+                    <% if (lietotajs.loma === 'administrators') { %>
+                        <a href="/admin" class="<%= path && path.startsWith('/admin') ? 'aktivs' : '' %>"><%= t('nav.admin') %></a>
+                    <% } %>
+                <% } %>
+            </nav>
+            <div class="lietotaja-bloks">
+                <div class="lang-tema-bloks" role="group" aria-label="<%= t('tema.label') %> / <%= t('lang.name') %>">
+                    <div class="lt-grupa" role="group" aria-label="<%= t('tema.label') %>">
+                        <button type="button" data-tema-pec="auto" title="<%= t('tema.auto') %>" aria-pressed="false">A</button>
+                        <button type="button" data-tema-pec="gaisa" title="<%= t('tema.gaisa') %>" aria-pressed="false">☀</button>
+                        <button type="button" data-tema-pec="tumsa" title="<%= t('tema.tumsa') %>" aria-pressed="false">☾</button>
+                    </div>
+                    <div class="lt-grupa" role="group" aria-label="<%= t('lang.name') %>">
+                        <% atbalstitasValodas.forEach(function (kods) { %>
+                            <form action="/valoda/<%= kods %>" method="post" class="iekslinis">
+                                <input type="hidden" name="atpakal" value="<%= path %><%= Object.keys(query).length ? '?' + new URLSearchParams(query).toString() : '' %>">
+                                <button type="submit" class="<%= lang === kods ? 'aktivs' : '' %>" title="<%= t('lang.' + kods) %>"><%= kods.toUpperCase() %></button>
+                            </form>
+                        <% }) %>
+                    </div>
+                </div>
+                <a href="/iestatijumi" class="poga maza" title="<%= t('iestatijumi.title') %>" aria-label="<%= t('iestatijumi.title') %>">⚙</a>
+                <% if (lietotajs) { %>
+                    <a href="/profils" class="poga-saite">
+                        <%= lietotajs.lietotajvards %>
+                    </a>
+                    <form action="/iziet" method="post" class="iekslinis">
+                        <button type="submit" class="poga maza"><%= t('nav.iziet') %></button>
+                    </form>
+                <% } else { %>
+                    <a href="/pieslegties" class="poga maza"><%= t('nav.pieslegties') %></a>
+                    <a href="/registreties" class="poga maza primara"><%= t('nav.registreties') %></a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+    <main id="galvenais" class="ietvars">
+        <% if (flash && flash.success && flash.success.length) { %>
+            <div class="zinojums veiksme" role="status"><%= flash.success.join(' ') %></div>
+        <% } %>
+        <% if (flash && flash.error && flash.error.length) { %>
+            <div class="zinojums kluda" role="alert"><%= flash.error.join(' ') %></div>
+        <% } %>
+        <% if (flash && flash.info && flash.info.length) { %>
+            <div class="zinojums info" role="status"><%= flash.info.join(' ') %></div>
+        <% } %>

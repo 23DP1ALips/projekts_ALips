@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<form action="/kategorijas/jauna" method="post" class="forma" novalidate>
+    <h1><%= t('kategorijas.create_title') %></h1>
+    <p class="palidzigais"><%= t('kategorijas.create_lead') %></p>
+
+    <div class="lauks">
+        <label for="nosaukums"><%= t('common.nosaukums') %></label>
+        <input id="nosaukums" name="nosaukums" type="text" required minlength="2" maxlength="80" value="<%= forma.nosaukums %>">
+        <% if (kludas.nosaukums) { %><span class="lauka-kluda"><%= t(kludas.nosaukums) %></span><% } %>
+    </div>
+
+    <div class="lauks">
+        <label for="apraksts"><%= t('common.apraksts') %></label>
+        <input id="apraksts" name="apraksts" type="text" maxlength="255" value="<%= forma.apraksts %>">
+        <span class="palidzigais"><%= t('kategorijas.description_help') %></span>
+    </div>
+
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= t('common.pievienot') %></button>
+        <a href="/kategorijas" class="poga"><%= t('common.atcelt') %></a>
+    </div>
+</form>
+
+<%- include('../partials/footer') %>

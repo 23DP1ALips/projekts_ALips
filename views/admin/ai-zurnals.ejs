@@ -1,0 +1,108 @@
+<%- include('../partials/header') %>
+<%- include('partials/admin-nav') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('admin_ai.title') %></h1>
+</div>
+
+<section class="statistikas-režģis" aria-label="<%= t('admin_ai.stats_aria') %>">
+    <article class="stat-karte"><div class="skaits"><%= statistika.kopa %></div><div class="nosaukums"><%= t('admin_ai.stat_total') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= statistika.pedeja_stunda || 0 %></div><div class="nosaukums"><%= t('admin_ai.stat_last_hour') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= statistika.pedeja_diena || 0 %></div><div class="nosaukums"><%= t('admin_ai.stat_last_day') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= statistika.ar_claude || 0 %></div><div class="nosaukums"><%= t('admin_ai.stat_claude') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= statistika.ar_lokala || 0 %></div><div class="nosaukums"><%= t('admin_ai.stat_local') %></div></article>
+    <article class="stat-karte"><div class="skaits"><%= statistika.bloketi || 0 %></div><div class="nosaukums"><%= t('admin_ai.stat_blocked') %></div></article>
+</section>
+
+<% if (topLietotaji && topLietotaji.length) { %>
+    <section style="margin-bottom: 24px;">
+        <h2><%= t('admin_ai.top_users') %></h2>
+        <div class="tabula-iesainojums">
+            <table class="datu-tabula">
+                <thead><tr><th scope="col"><%= t('common.lietotajs') %></th><th scope="col"><%= t('admin_ai.requests_7d') %></th></tr></thead>
+                <tbody>
+                    <% topLietotaji.forEach(function (l) { %>
+                        <tr>
+                            <td><a href="/lietotaji/<%= l.lietotajs_id %>"><%= l.lietotajvards %></a></td>
+                            <td><%= l.pieprasijumi %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+<% } %>
+
+<form action="/admin/ai-zurnals" method="get" class="filtri">
+    <div class="lauks">
+        <label for="lietotajs"><%= t('admin_ai.filter_user') %></label>
+        <input id="lietotajs" name="lietotajs" type="search" value="<%= filtrs.lietotajs %>">
+    </div>
+    <div class="lauks">
+        <label for="darbiba"><%= t('admin_ai.filter_action') %></label>
+        <select id="darbiba" name="darbiba">
+            <option value=""><%= t('admin_ai.filter_all') %></option>
+            <option value="uzlabot" <%= filtrs.darbiba === 'uzlabot' ? 'selected' : '' %>><%= t('ai.improve') %></option>
+            <option value="virsraksts" <%= filtrs.darbiba === 'virsraksts' ? 'selected' : '' %>><%= t('ai.title_btn') %></option>
+        </select>
+    </div>
+    <div class="lauks">
+        <label for="avots"><%= t('admin_ai.filter_source') %></label>
+        <select id="avots" name="avots">
+            <option value=""><%= t('admin_ai.filter_all') %></option>
+            <option value="claude" <%= filtrs.avots === 'claude' ? 'selected' : '' %>>Claude API</option>
+            <option value="lokala" <%= filtrs.avots === 'lokala' ? 'selected' : '' %>><%= t('admin_ai.source_local') %></option>
+            <option value="kluda" <%= filtrs.avots === 'kluda' ? 'selected' : '' %>><%= t('admin_ai.source_error') %></option>
+            <option value="limits" <%= filtrs.avots === 'limits' ? 'selected' : '' %>><%= t('admin_ai.source_limit') %></option>
+        </select>
+    </div>
+    <div class="lauks">
+        <button type="submit" class="poga primara"><%= t('common.filtret') %></button>
+    </div>
+</form>
+
+<div class="tabula-iesainojums">
+    <table class="datu-tabula">
+        <thead>
+            <tr>
+                <th scope="col"><%- sortLink('id', t('common.id'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('izveidots', t('common.datums'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('lietotajvards', t('common.lietotajs'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('darbiba', t('admin_ai.col_action'), sortInfo) %></th>
+                <th scope="col"><%= t('admin_ai.col_input') %></th>
+                <th scope="col"><%- sortLink('ievades_garums', t('admin_ai.col_lengths'), sortInfo) %></th>
+                <th scope="col"><%- sortLink('avots', t('admin_ai.col_source'), sortInfo) %></th>
+                <th scope="col">IP</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (!zurnals.length) { %>
+                <tr><td colspan="8" style="text-align:center;"><%= t('admin.audit_empty') %></td></tr>
+            <% } %>
+            <% zurnals.forEach(function (z) { %>
+                <tr>
+                    <td><%= z.ai_pieprasijums_id %></td>
+                    <td><%= format.formatDatums(z.izveidots) %></td>
+                    <td>
+                        <% if (z.lietotajvards) { %>
+                            <a href="/lietotaji/<%= z.lietotajs_id %>"><%= z.lietotajvards %></a>
+                        <% } else { %>
+                            —
+                        <% } %>
+                    </td>
+                    <td><%= z.darbiba %></td>
+                    <td title="<%= z.ievade_fragments || '' %>"><%= format.saisinat(z.ievade_fragments || '', 80) %></td>
+                    <td><%= z.ievades_garums %> → <%= z.izvades_garums == null ? '—' : z.izvades_garums %></td>
+                    <td>
+                        <span class="marka <%= z.avots === 'claude' ? 'aktivs' : (z.avots === 'limits' || z.avots === 'kluda' ? 'blokets' : '') %>">
+                            <%= z.avots %>
+                        </span>
+                    </td>
+                    <td><small><%= z.ip || '—' %></small></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>

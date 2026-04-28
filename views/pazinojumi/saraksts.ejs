@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('pazinojumi.title') %></h1>
+    <% if (pazinojumi.some(function (p) { return !p.izlasits; })) { %>
+        <form action="/pazinojumi/visi-lasit" method="post" class="iekslinis">
+            <button type="submit" class="poga"><%= t('pazinojumi.mark_all_read') %></button>
+        </form>
+    <% } %>
+</div>
+
+<% if (!pazinojumi.length) { %>
+    <p><%= t('pazinojumi.empty') %></p>
+<% } else { %>
+    <div class="pazinojumu-saraksts">
+        <% pazinojumi.forEach(function (p) { %>
+            <article class="pazinojuma-rinda <%= p.izlasits ? '' : 'nelasits' %>">
+                <div>
+                    <p style="margin: 0;"><%= format.tulkotPazinojumu(p.teksts, t) %></p>
+                    <small><%= format.formatDatums(p.izveidots) %> · <%= t('pazinojumi.type_label', { type: p.tips }) %></small>
+                </div>
+                <div class="darbibu-stabins">
+                    <% if (p.tips === 'komentars' && p.avota_tips === 'ieraksts') { %>
+                        <form action="/pazinojumi/<%= p.pazinojums_id %>/lasits" method="post" class="iekslinis">
+                            <input type="hidden" name="tips" value="<%= p.tips %>">
+                            <input type="hidden" name="avota_tips" value="<%= p.avota_tips %>">
+                            <input type="hidden" name="avota_id" value="<%= p.avota_id %>">
+                            <button type="submit" class="poga maza primara"><%= t('pazinojumi.open_post') %></button>
+                        </form>
+                    <% } else if (p.tips === 'privata_zina' && p.avota_tips === 'lietotajs') { %>
+                        <form action="/pazinojumi/<%= p.pazinojums_id %>/lasits" method="post" class="iekslinis">
+                            <input type="hidden" name="tips" value="<%= p.tips %>">
+                            <input type="hidden" name="avota_tips" value="<%= p.avota_tips %>">
+                            <input type="hidden" name="avota_id" value="<%= p.avota_id %>">
+                            <button type="submit" class="poga maza primara"><%= t('pazinojumi.open_thread') %></button>
+                        </form>
+                    <% } else if (!p.izlasits) { %>
+                        <form action="/pazinojumi/<%= p.pazinojums_id %>/lasits" method="post" class="iekslinis">
+                            <button type="submit" class="poga maza"><%= t('pazinojumi.mark_read') %></button>
+                        </form>
+                    <% } %>
+                </div>
+            </article>
+        <% }) %>
+    </div>
+<% } %>
+
+<%- include('../partials/footer') %>

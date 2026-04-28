@@ -1,0 +1,36 @@
+{
+    "name": "Vienota tiessaistes kopienu foruma platforma",
+    "short_name": "Forums",
+    "description": "Tiessaistes forums diskusijam un kopienai.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#f5f7fb",
+    "theme_color": "#1f6feb",
+    "lang": "lv",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icons/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-maskable.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Jauns ieraksts",
+            "url": "/ieraksti/jauns"
+        },
+        {
+            "name": "Pazinojumi",
+            "url": "/pazinojumi"
+        }
+    ]
+}

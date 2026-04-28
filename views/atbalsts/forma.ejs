@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('atbalsts.title') %></h1>
+</div>
+
+<form action="/atbalsts" method="post" class="forma plata" novalidate>
+    <p class="palidzigais"><%= t('atbalsts.lead') %></p>
+
+    <% if (lietotajs) { %>
+        <div class="zinojums info" role="status"><%= t('atbalsts.logged_in_note', { user: lietotajs.lietotajvards }) %></div>
+    <% } %>
+
+    <% if (supportEmail) { %>
+        <p class="palidzigais"><%= t('atbalsts.support_email_to', { email: supportEmail }) %></p>
+    <% } %>
+    <% if (!smtpKonfigurets) { %>
+        <div class="zinojums info" role="status"><%= t('atbalsts.smtp_warning') %></div>
+    <% } %>
+
+    <div class="lauks">
+        <label for="vards"><%= t('atbalsts.name_label') %></label>
+        <input id="vards" name="vards" type="text" required maxlength="100" value="<%= forma.vards %>">
+        <% if (kludas.vards) { %><span class="lauka-kluda"><%= t(kludas.vards) %></span><% } %>
+    </div>
+    <div class="lauks">
+        <label for="epasts"><%= t('atbalsts.email_label') %></label>
+        <input id="epasts" name="epasts" type="email" required maxlength="100" value="<%= forma.epasts %>">
+        <% if (kludas.epasts) { %><span class="lauka-kluda"><%= t(kludas.epasts) %></span><% } %>
+    </div>
+    <div class="lauks">
+        <label for="tema"><%= t('atbalsts.subject_label') %></label>
+        <input id="tema" name="tema" type="text" required maxlength="150" value="<%= forma.tema %>">
+        <% if (kludas.tema) { %><span class="lauka-kluda"><%= t(kludas.tema) %></span><% } %>
+    </div>
+    <div class="lauks">
+        <label for="zinojums"><%= t('atbalsts.message_label') %></label>
+        <textarea id="zinojums" name="zinojums" required minlength="10" maxlength="5000"><%= forma.zinojums %></textarea>
+        <% if (kludas.zinojums) { %><span class="lauka-kluda"><%= t(kludas.zinojums) %></span><% } %>
+    </div>
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= t('atbalsts.submit') %></button>
+    </div>
+</form>
+
+<% if (lietotajs) { %>
+    <h2><%= t('atbalsts.view_my') %></h2>
+    <% if (!mans_pieprasijumi.length) { %>
+        <p><%= t('atbalsts.no_requests') %></p>
+    <% } else { %>
+        <div class="tabula-iesainojums">
+            <table class="datu-tabula">
+                <thead>
+                    <tr>
+                        <th scope="col"><%= t('common.id') %></th>
+                        <th scope="col"><%= t('atbalsts.table_subject') %></th>
+                        <th scope="col"><%= t('atbalsts.table_status') %></th>
+                        <th scope="col"><%= t('atbalsts.table_date') %></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% mans_pieprasijumi.forEach(function (p) { %>
+                        <tr>
+                            <td><%= p.atbalsts_id %></td>
+                            <td><%= p.tema %></td>
+                            <td><span class="marka <%= p.statuss === 'atbildets' ? 'aktivs' : (p.statuss === 'aizverts' ? 'blokets' : '') %>"><%= t('atbalsts.status_' + p.statuss) %></span></td>
+                            <td><%= format.formatDatums(p.izveidots) %></td>
+                            <td><a href="/atbalsts/<%= p.atbalsts_id %>" class="poga maza"><%= t('atbalsts.view_button') %></a></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+<% } %>
+
+<%- include('../partials/footer') %>

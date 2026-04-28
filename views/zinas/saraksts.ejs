@@ -1,0 +1,73 @@
+<%- include('../partials/header') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('zinas.title') %></h1>
+    <a href="/zinas/jauna" class="poga primara"><%= t('zinas.new') %></a>
+</div>
+
+<div class="zinu-divi-stabini">
+    <aside class="sarakstapuse" aria-label="<%= t('zinas.list_aria') %>">
+        <% if (!sarunas.length) { %>
+            <p style="padding: 12px;"><%= t('zinas.no_conversations') %></p>
+        <% } else { %>
+            <% sarunas.forEach(function (s) { %>
+                <a href="/zinas/<%= s.lietotajs_id %>" class="sarunas-rinda <%= aktivaSaruna === s.lietotajs_id ? 'aktivs' : '' %> <%= s.nelasitas > 0 ? 'nelasita' : '' %>">
+                    <strong><%= s.lietotajvards %><% if (s.nelasitas > 0) { %> (<%= s.nelasitas %>)<% } %></strong>
+                    <small><%= format.saisinat(s.pedejas_saturs, 60) %></small>
+                    <small><%= format.formatDatums(s.pedejas_nosutits) %></small>
+                </a>
+            <% }) %>
+        <% } %>
+    </aside>
+
+    <section class="sarunas-skats" aria-label="<%= t('zinas.thread_aria') %>">
+        <% if (saruntotajs) { %>
+            <h2 style="margin-top:0;"><%= t('zinas.thread_with', { user: '' }) %><a href="/lietotaji/<%= saruntotajs.lietotajs_id %>"><%= saruntotajs.lietotajvards %></a></h2>
+            <div class="zinas-burbulu-josla" id="zinu-josla">
+                <% if (!zinas.length) { %>
+                    <p><%= t('zinas.no_messages') %></p>
+                <% } else { %>
+                    <% zinas.forEach(function (z) { %>
+                        <div class="zinas-burbulis <%= z.sutitaja_id === lietotajs.lietotajs_id ? 'savs' : '' %>">
+                            <div><%- format.nl2br(z.saturs) %></div>
+                            <small><%= format.formatDatums(z.nosutits) %></small>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+            <form action="/zinas" method="post" style="margin-top: 12px;" novalidate>
+                <input type="hidden" name="sanemejs" value="<%= saruntotajs.lietotajvards %>">
+                <div class="lauks">
+                    <label for="saturs" class="palidzigais"><%= t('zinas.reply_label') %></label>
+                    <textarea id="saturs" name="saturs" required minlength="1" maxlength="5000" placeholder="<%= t('zinas.reply_placeholder') %>"></textarea>
+                    <% if (kludas.saturs) { %><span class="lauka-kluda"><%= t(kludas.saturs) %></span><% } %>
+                </div>
+                <button type="submit" class="poga primara"><%= t('common.sutit') %></button>
+            </form>
+        <% } else { %>
+            <h2 style="margin-top:0;"><%= t('zinas.new') %></h2>
+            <form action="/zinas" method="post" novalidate>
+                <div class="lauks">
+                    <label for="sanemejs"><%= t('zinas.recipient_label') %></label>
+                    <input id="sanemejs" name="sanemejs" type="text" required value="<%= forma.sanemejs %>">
+                    <% if (kludas.sanemejs) { %><span class="lauka-kluda"><%= t(kludas.sanemejs) %></span><% } %>
+                </div>
+                <div class="lauks">
+                    <label for="saturs"><%= t('zinas.content_label') %></label>
+                    <textarea id="saturs" name="saturs" required minlength="1" maxlength="5000"><%= forma.saturs %></textarea>
+                    <% if (kludas.saturs) { %><span class="lauka-kluda"><%= t(kludas.saturs) %></span><% } %>
+                </div>
+                <button type="submit" class="poga primara"><%= t('zinas.send_message') %></button>
+            </form>
+        <% } %>
+    </section>
+</div>
+
+<script>
+    (function () {
+        var josla = document.getElementById('zinu-josla');
+        if (josla) josla.scrollTop = josla.scrollHeight;
+    })();
+</script>
+
+<%- include('../partials/footer') %>

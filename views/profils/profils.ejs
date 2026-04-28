@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<section class="profila-galva">
+    <h1><%= mansProfils.lietotajvards %></h1>
+    <p class="meta">
+        <%= mansProfils.epasts %> · <%= t('common.loma') %>:
+        <span class="marka <%= mansProfils.loma === 'administrators' ? 'administrators' : '' %>"><%= mansProfils.loma %></span>
+        · <%= t('profils.registered_at', { date: format.formatDatums(mansProfils.registracijas_datums) }) %>
+    </p>
+    <p class="meta"><%= t('profils.stats', { posts: statistika.ierakstu_skaits, comments: statistika.komentaru_skaits }) %></p>
+    <% if (mansProfils.profila_apraksts) { %>
+        <p><%= mansProfils.profila_apraksts %></p>
+    <% } %>
+</section>
+
+<form action="/profils" method="post" class="forma plata" novalidate>
+    <h2><%= t('profils.edit_section') %></h2>
+    <div class="lauks">
+        <label for="profila_apraksts"><%= t('profils.description_label') %></label>
+        <textarea id="profila_apraksts" name="profila_apraksts" maxlength="255"><%= forma.profila_apraksts %></textarea>
+        <span class="palidzigais"><%= t('profils.description_help') %></span>
+        <% if (kludas.profila_apraksts) { %><span class="lauka-kluda"><%= t(kludas.profila_apraksts) %></span><% } %>
+    </div>
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= t('common.saglabat') %></button>
+        <a href="/lietotaji/<%= mansProfils.lietotajs_id %>" class="poga"><%= t('profils.view_public') %></a>
+    </div>
+</form>
+
+<form action="/profils/parole" method="post" class="forma plata" novalidate>
+    <h2><%= t('profils.change_password') %></h2>
+    <div class="lauks">
+        <label for="parole_pasreizeja"><%= t('profils.current_password') %></label>
+        <input id="parole_pasreizeja" name="parole_pasreizeja" type="password" required autocomplete="current-password">
+        <% if (parolesKludas.parole_pasreizeja) { %><span class="lauka-kluda"><%= t(parolesKludas.parole_pasreizeja) %></span><% } %>
+    </div>
+    <div class="lauks">
+        <label for="parole_jauna"><%= t('profils.new_password') %></label>
+        <input id="parole_jauna" name="parole_jauna" type="password" required minlength="8" autocomplete="new-password">
+        <% if (parolesKludas.parole_jauna) { %><span class="lauka-kluda"><%= t(parolesKludas.parole_jauna) %></span><% } %>
+    </div>
+    <div class="lauks">
+        <label for="parole_apstiprinata"><%= t('profils.repeat_new_password') %></label>
+        <input id="parole_apstiprinata" name="parole_apstiprinata" type="password" required minlength="8" autocomplete="new-password">
+        <% if (parolesKludas.parole_apstiprinata) { %><span class="lauka-kluda"><%= t(parolesKludas.parole_apstiprinata) %></span><% } %>
+    </div>
+    <div class="formas-darbibas">
+        <button type="submit" class="poga primara"><%= t('profils.change_password') %></button>
+    </div>
+</form>
+
+<%- include('../partials/footer') %>

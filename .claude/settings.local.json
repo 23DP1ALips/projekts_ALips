@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test *)",
+      "Bash(node -e \"['./routes/auth','./routes/kategorijas','./routes/ieraksti','./routes/komentari','./routes/zinas','./routes/pazinojumi','./routes/profils','./routes/lietotaji','./routes/ai','./routes/admin','./middleware/auth','./utils/validacija','./utils/format','./config/db'].forEach\\(m => { require\\(m\\); console.log\\('OK', m\\); }\\)\")"
+    ]
+  }
+}

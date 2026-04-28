@@ -1,0 +1,105 @@
+<%- include('../partials/header') %>
+
+<article class="ieraksta-saturs">
+    <p><a href="/ieraksti?kategorija=<%= ieraksts.kategorija_id %>" class="marka"><%= ieraksts.kategorijas_nosaukums %></a></p>
+    <h1><%= ieraksts.virsraksts %></h1>
+    <p class="ieraksta-meta">
+        <%= t('ieraksti.by_author') %>: <a href="/lietotaji/<%= ieraksts.autora_id %>"><%= ieraksts.autora_vards %></a> ·
+        <%= format.formatDatums(ieraksts.izveidots) %>
+        <% if (ieraksts.atjauninats && ieraksts.atjauninats.toString() !== ieraksts.izveidots.toString()) { %>
+            · <%= t('ieraksti.edited_at', { date: format.formatDatums(ieraksts.atjauninats) }) %>
+        <% } %>
+        <% if (ieraksts.statuss !== 'publicets') { %>
+            · <span class="marka"><%= t('ieraksti.status_label', { status: t('ieraksti.status_' + (ieraksts.statuss === 'melnraksts' ? 'draft' : 'closed')) }) %></span>
+        <% } %>
+    </p>
+
+    <div class="balsojuma-bloks">
+        <% if (lietotajs && lietotajs.lietotajs_id !== ieraksts.autora_id && ieraksts.statuss === 'publicets') { %>
+            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/balsot" method="post" class="iekslinis">
+                <button type="submit" class="balsot-poga <%= lietotaja_balsoja ? 'aktivs' : '' %>" aria-pressed="<%= lietotaja_balsoja %>">
+                    <span class="balsot-bulta">▲</span>
+                    <span class="balsot-skaits"><%= ieraksts.balsu_skaits %></span>
+                    <span class="balsot-teksts"><%= lietotaja_balsoja ? t('balsojums.voted') : t('balsojums.vote') %></span>
+                </button>
+            </form>
+        <% } else { %>
+            <span class="balsot-poga atspejota" aria-disabled="true" title="<%= !lietotajs ? t('balsojums.login_required') : (lietotajs.lietotajs_id === ieraksts.autora_id ? t('balsojums.self_vote') : '') %>">
+                <span class="balsot-bulta">▲</span>
+                <span class="balsot-skaits"><%= ieraksts.balsu_skaits %></span>
+                <span class="balsot-teksts"><%= t('balsojums.count', { count: ieraksts.balsu_skaits }) %></span>
+            </span>
+        <% } %>
+    </div>
+
+    <div class="ieraksta-teksts">
+        <%- format.nl2br(ieraksts.saturs) %>
+    </div>
+
+    <% if (varRedigēt) { %>
+        <div class="formas-darbibas" style="margin-top: 20px;">
+            <a href="/ieraksti/<%= ieraksts.ieraksts_id %>/rediget" class="poga"><%= t('common.rediget') %></a>
+            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('ieraksti.delete_confirm') %>">
+                <button type="submit" class="poga bistama"><%= t('common.dzest') %></button>
+            </form>
+        </div>
+    <% } %>
+</article>
+
+<section class="komentaru-bloks" aria-label="<%= t('common.komentars') %>" id="komentari">
+    <h2><%= t('komentari.title', { count: komentaruKopskaits }) %></h2>
+
+    <% if (lietotajs && ieraksts.statuss !== 'slegts') { %>
+        <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/komentari" method="post" class="forma plata" novalidate>
+            <div class="lauks">
+                <label for="komentara-teksts"><%= t('komentari.add_label') %></label>
+                <textarea id="komentara-teksts" name="teksts" required minlength="2" maxlength="2000"><%= komentaraForma.teksts %></textarea>
+                <% if (komentaraKludas.teksts) { %><span class="lauka-kluda"><%= t(komentaraKludas.teksts) %></span><% } %>
+            </div>
+            <div class="formas-darbibas">
+                <button type="submit" class="poga primara"><%= t('komentari.submit') %></button>
+            </div>
+        </form>
+    <% } else if (!lietotajs) { %>
+        <p><a href="/pieslegties?nakamais=/ieraksti/<%= ieraksts.ieraksts_id %>"><%= t('komentari.login_to_comment_link') %></a><%= t('komentari.login_to_comment_post') %></p>
+    <% } else { %>
+        <p><%= t('komentari.closed_post') %></p>
+    <% } %>
+
+    <% if (!komentari.length) { %>
+        <p><%= t('komentari.empty') %></p>
+    <% } else { %>
+        <%- include('partials/komentaru-koks', { komentari: komentari, dziluma: 0, ieraksts: ieraksts, lietotajs: lietotajs, irAdmins: irAdmins }) %>
+    <% } %>
+</section>
+
+<script>
+    (function () {
+        document.querySelectorAll('[data-atbildet-uz]').forEach(function (poga) {
+            poga.addEventListener('click', function () {
+                var id = poga.getAttribute('data-atbildet-uz');
+                var f = document.getElementById('atbildes-forma-' + id);
+                if (!f) return;
+                var atvert = f.hidden;
+                f.hidden = !atvert;
+                if (atvert) {
+                    var ta = f.querySelector('textarea');
+                    if (ta) ta.focus();
+                }
+            });
+        });
+        document.querySelectorAll('[data-atcelt-atbildi]').forEach(function (poga) {
+            poga.addEventListener('click', function () {
+                var id = poga.getAttribute('data-atcelt-atbildi');
+                var f = document.getElementById('atbildes-forma-' + id);
+                if (f) {
+                    f.hidden = true;
+                    var ta = f.querySelector('textarea');
+                    if (ta) ta.value = '';
+                }
+            });
+        });
+    })();
+</script>
+
+<%- include('../partials/footer') %>

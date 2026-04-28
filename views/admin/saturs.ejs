@@ -1,0 +1,106 @@
+<%- include('../partials/header') %>
+<%- include('partials/admin-nav') %>
+
+<div class="lapas-virsraksts">
+    <h1><%= t('admin.content_title') %></h1>
+    <div>
+        <a href="/admin/saturs?veids=ieraksti" class="poga <%= veids === 'ieraksti' ? 'primara' : '' %>"><%= t('admin.tab_posts') %></a>
+        <a href="/admin/saturs?veids=komentari" class="poga <%= veids === 'komentari' ? 'primara' : '' %>"><%= t('admin.tab_comments') %></a>
+    </div>
+</div>
+
+<% if (veids === 'ieraksti') { %>
+    <div class="tabula-iesainojums">
+        <table class="datu-tabula">
+            <thead>
+                <tr>
+                    <th scope="col"><%- sortLink('id', t('common.id'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('virsraksts', t('common.virsraksts'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('autors', t('common.autors'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('kategorija', t('common.kategorija'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('statuss', t('common.statuss'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('izveidots', t('common.datums'), sortInfo) %></th>
+                    <th scope="col"><%= t('common.darbibas') %></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% ieraksti.forEach(function (i) { %>
+                    <tr>
+                        <td><%= i.ieraksts_id %></td>
+                        <td><a href="/ieraksti/<%= i.ieraksts_id %>"><%= i.virsraksts %></a></td>
+                        <td><a href="/lietotaji/<%= i.lietotajs_id %>"><%= i.lietotajvards %></a></td>
+                        <td><%= i.kategorijas_nosaukums %></td>
+                        <td><span class="marka"><%= i.statuss %></span></td>
+                        <td><%= format.formatDatums(i.izveidots) %></td>
+                        <td>
+                            <div class="darbibu-stabins">
+                                <% if (i.statuss === 'publicets') { %>
+                                    <form action="/admin/ieraksti/<%= i.ieraksts_id %>/statuss" method="post" class="iekslinis">
+                                        <input type="hidden" name="statuss" value="slegts">
+                                        <button type="submit" class="poga maza bistama"><%= t('admin.close_post') %></button>
+                                    </form>
+                                <% } else { %>
+                                    <form action="/admin/ieraksti/<%= i.ieraksts_id %>/statuss" method="post" class="iekslinis">
+                                        <input type="hidden" name="statuss" value="publicets">
+                                        <button type="submit" class="poga maza"><%= t('admin.publish_post') %></button>
+                                    </form>
+                                <% } %>
+                                <form action="/admin/ieraksti/<%= i.ieraksts_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.delete_post_confirm') %>">
+                                    <button type="submit" class="poga maza bistama"><%= t('common.dzest') %></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+<% } else { %>
+    <div class="tabula-iesainojums">
+        <table class="datu-tabula">
+            <thead>
+                <tr>
+                    <th scope="col"><%- sortLink('id', t('common.id'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('teksts', t('admin.comment_table_text'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('autors', t('common.autors'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('ieraksts', t('common.ieraksts'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('statuss', t('common.statuss'), sortInfo) %></th>
+                    <th scope="col"><%- sortLink('izveidots', t('common.datums'), sortInfo) %></th>
+                    <th scope="col"><%= t('common.darbibas') %></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% komentari.forEach(function (k) { %>
+                    <tr>
+                        <td><%= k.komentars_id %></td>
+                        <td><%= format.saisinat(k.teksts, 120) %></td>
+                        <td><a href="/lietotaji/<%= k.lietotajs_id %>"><%= k.lietotajvards %></a></td>
+                        <td><a href="/ieraksti/<%= k.ieraksts_id %>"><%= format.saisinat(k.ieraksta_virsraksts, 60) %></a></td>
+                        <td><span class="marka"><%= k.statuss %></span></td>
+                        <td><%= format.formatDatums(k.izveidots) %></td>
+                        <td>
+                            <div class="darbibu-stabins">
+                                <% if (k.statuss === 'redzams') { %>
+                                    <form action="/admin/komentari/<%= k.komentars_id %>/statuss" method="post" class="iekslinis">
+                                        <input type="hidden" name="statuss" value="paslepts">
+                                        <button type="submit" class="poga maza"><%= t('admin.hide_comment') %></button>
+                                    </form>
+                                <% } else { %>
+                                    <form action="/admin/komentari/<%= k.komentars_id %>/statuss" method="post" class="iekslinis">
+                                        <input type="hidden" name="statuss" value="redzams">
+                                        <button type="submit" class="poga maza"><%= t('admin.show_comment') %></button>
+                                    </form>
+                                <% } %>
+                                <form action="/admin/komentari/<%= k.komentars_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.delete_comment_confirm') %>">
+                                    <button type="submit" class="poga maza bistama"><%= t('common.dzest') %></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+<% } %>
+
+<%- include('../partials/footer') %>

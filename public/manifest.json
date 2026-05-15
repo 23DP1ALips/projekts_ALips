@@ -1,7 +1,7 @@
 {
-    "name": "Vienota tiessaistes kopienu foruma platforma",
-    "short_name": "Forums",
-    "description": "Tiessaistes forums diskusijam un kopienai.",
+    "name": "Velmora",
+    "short_name": "Velmora",
+    "description": "Velmora - tiessaistes forums diskusijam un kopienai.",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",

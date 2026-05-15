@@ -22,7 +22,7 @@
         "iziet": "Iziet",
         "iestatijumi": "Iestatījumi",
         "atbalsts": "Atbalsts",
-        "saakums": "Forums sākumlapa",
+        "saakums": "Velmora sākumlapa",
         "galvena": "Galvenā navigācija",
         "parlekt_uz_saturu": "Pāriet uz saturu",
         "nelasitas_zinas": "{count} nelasītas",
@@ -67,7 +67,7 @@
         "sutit": "Sūtīt"
     },
     "footer": {
-        "copy": "© {year} Forums. Noslēguma darbs - Datu bāzu programmēšana."
+        "copy": "© {year} Velmora"
     },
     "home": {
         "title": "Sākums",

@@ -52,16 +52,22 @@ router.post('/registreties', noverstAutorizetus, async (req, res, next) => {
         }
 
         const hash = await bcrypt.hash(parole, HASH_RAUNDI);
+
+        // Pirmais reģistrētais lietotājs automātiski kļūst par administratoru
+        // (vienkārša bootstrap-loma jaunai datu bāzei bez seed datiem).
+        const [skaitsRez] = await db.query('SELECT COUNT(*) AS c FROM lietotajs');
+        const loma = skaitsRez[0].c === 0 ? 'administrators' : 'lietotajs';
+
         const [rez] = await db.query(
             'INSERT INTO lietotajs (lietotajvards, epasts, paroles_hash, loma) VALUES (?, ?, ?, ?)',
-            [tirsLietotajvards, tirsEpasts, hash, 'lietotajs']
+            [tirsLietotajvards, tirsEpasts, hash, loma]
         );
 
         req.session.lietotajs = {
             lietotajs_id: rez.insertId,
             lietotajvards: tirsLietotajvards,
             epasts: tirsEpasts,
-            loma: 'lietotajs',
+            loma,
         };
         req.flash('success', req.t('flash.register_success'));
         res.redirect('/');

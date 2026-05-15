@@ -1,4 +1,4 @@
-const VERSIJA = 'forum-cache-v7';
+const VERSIJA = 'velmora-cache-v8';
 const STATISKAS_VIETAS = [
     '/',
     '/css/style.css',

@@ -105,10 +105,10 @@ CREATE TABLE privata_zina (
     KEY idx_privata_zina_sanemejs (sanemeja_id),
     CONSTRAINT fk_privata_zina_sutitajs FOREIGN KEY (sutitaja_id)
         REFERENCES lietotajs(lietotajs_id)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
+        ON DELETE RESTRICT,
     CONSTRAINT fk_privata_zina_sanemejs FOREIGN KEY (sanemeja_id)
         REFERENCES lietotajs(lietotajs_id)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
+        ON DELETE RESTRICT,
     CONSTRAINT chk_privata_zina_dalibnieki CHECK (sutitaja_id <> sanemeja_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

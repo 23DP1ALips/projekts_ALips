@@ -83,7 +83,7 @@ app.use((req, res, next) => {
         error: req.flash('error'),
         info: req.flash('info'),
     };
-    res.locals.pageTitle = 'Forums';
+    res.locals.pageTitle = 'Velmora';
     res.locals.path = req.path;
     res.locals.query = req.query;
     res.locals.format = { formatDatums, nl2br, saisinat, tulkotPazinojumu };
@@ -142,5 +142,5 @@ app.use((err, req, res, _next) => {
 
 const port = Number(process.env.PORT) || 3000;
 app.listen(port, () => {
-    console.log(`Forums klausās uz http://localhost:${port}`);
+    console.log(`Velmora klausās uz http://localhost:${port}`);
 });

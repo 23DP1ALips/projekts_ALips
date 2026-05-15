@@ -35,7 +35,7 @@
                     <% }) %>
                 <% } %>
             </div>
-            <form action="/zinas" method="post" style="margin-top: 12px;" novalidate>
+            <form action="/zinas" method="post" style="margin-top: 12px;" novalidate><%- csrfField() %>
                 <input type="hidden" name="sanemejs" value="<%= saruntotajs.lietotajvards %>">
                 <div class="lauks">
                     <label for="saturs" class="palidzigais"><%= t('zinas.reply_label') %></label>
@@ -46,7 +46,7 @@
             </form>
         <% } else { %>
             <h2 style="margin-top:0;"><%= t('zinas.new') %></h2>
-            <form action="/zinas" method="post" novalidate>
+            <form action="/zinas" method="post" novalidate><%- csrfField() %>
                 <div class="lauks">
                     <label for="sanemejs"><%= t('zinas.recipient_label') %></label>
                     <input id="sanemejs" name="sanemejs" type="text" required value="<%= forma.sanemejs %>">

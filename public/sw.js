@@ -1,4 +1,4 @@
-const VERSIJA = 'forum-cache-v5';
+const VERSIJA = 'forum-cache-v7';
 const STATISKAS_VIETAS = [
     '/',
     '/css/style.css',

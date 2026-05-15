@@ -43,23 +43,23 @@
                         <div class="darbibu-stabins">
                             <% if (l.lietotajs_id !== lietotajs.lietotajs_id) { %>
                                 <% if (l.statuss === 'aktivs') { %>
-                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/statuss" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.block_confirm', { user: l.lietotajvards }) %>">
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/statuss" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.block_confirm', { user: l.lietotajvards }) %>"><%- csrfField() %>
                                         <input type="hidden" name="statuss" value="blokets">
                                         <button type="submit" class="poga maza bistama"><%= t('admin.block') %></button>
                                     </form>
                                 <% } else { %>
-                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/statuss" method="post" class="iekslinis">
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/statuss" method="post" class="iekslinis"><%- csrfField() %>
                                         <input type="hidden" name="statuss" value="aktivs">
                                         <button type="submit" class="poga maza"><%= t('admin.unblock') %></button>
                                     </form>
                                 <% } %>
                                 <% if (l.loma === 'lietotajs') { %>
-                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/loma" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.make_admin_confirm') %>">
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/loma" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.make_admin_confirm') %>"><%- csrfField() %>
                                         <input type="hidden" name="loma" value="administrators">
                                         <button type="submit" class="poga maza"><%= t('admin.make_admin') %></button>
                                     </form>
                                 <% } else { %>
-                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/loma" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.remove_admin_confirm') %>">
+                                    <form action="/admin/lietotaji/<%= l.lietotajs_id %>/loma" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.remove_admin_confirm') %>"><%- csrfField() %>
                                         <input type="hidden" name="loma" value="lietotajs">
                                         <button type="submit" class="poga maza"><%= t('admin.remove_admin') %></button>
                                     </form>

@@ -2,14 +2,26 @@ require('dotenv').config();
 
 const path = require('path');
 const express = require('express');
+const helmet = require('helmet');
 const session = require('express-session');
 const flash = require('connect-flash');
 
 const { formatDatums, nl2br, saisinat, tulkotPazinojumu } = require('./utils/format');
 const { buildSortLink } = require('./utils/sort');
+const csrf = require('./utils/csrf');
 const i18n = require('./utils/i18n');
 const { dabutIestatijumus } = require('./routes/iestatijumi');
 const db = require('./config/db');
+
+const SESSION_SECRET = process.env.SESSION_SECRET;
+const NEDROSI_NOKLUSEJUMI = new Set(['mainit-uz-savu-noslepumu', 'parmainit-uz-savu-noslepumu', 'change-me', 'secret']);
+if (!SESSION_SECRET || SESSION_SECRET.length < 32 || NEDROSI_NOKLUSEJUMI.has(SESSION_SECRET)) {
+    console.error('FATAL: SESSION_SECRET environment variable is required and must be at least 32 characters.');
+    console.error('Generate a secure value with:');
+    console.error('  node -e "console.log(require(\'crypto\').randomBytes(48).toString(\'base64\'))"');
+    console.error('Set it in your .env file as SESSION_SECRET=...');
+    process.exit(1);
+}
 
 const app = express();
 
@@ -17,24 +29,50 @@ app.set('trust proxy', 'loopback, linklocal, uniquelocal');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", 'data:', 'blob:'],
+            connectSrc: ["'self'"],
+            fontSrc: ["'self'"],
+            objectSrc: ["'none'"],
+            baseUri: ["'self'"],
+            formAction: ["'self'"],
+            frameAncestors: ["'none'"],
+            upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+        },
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
+    crossOriginResourcePolicy: { policy: 'same-site' },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    hsts: process.env.NODE_ENV === 'production' ? { maxAge: 31536000, includeSubDomains: true } : false,
+}));
+
 app.use(express.urlencoded({ extended: false, limit: '256kb' }));
 app.use(express.json({ limit: '256kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
     name: 'forum.sid',
-    secret: process.env.SESSION_SECRET || 'mainit-uz-savu-noslepumu',
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
         sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 * 7,
     },
 }));
 app.use(flash());
 
 app.use(i18n.middleware());
+
+app.use(csrf.injectMiddleware);
 
 app.use((req, res, next) => {
     res.locals.lietotajs = req.session.lietotajs || null;
@@ -53,6 +91,8 @@ app.use((req, res, next) => {
     res.locals.sortLink = (kolonna, virsraksts, sortInfo) => buildSortLink(kolonna, virsraksts, sortInfo, req.query);
     next();
 });
+
+app.use(csrf.validateMiddleware);
 
 app.use(async (req, res, next) => {
     if (!req.session.lietotajs) return next();

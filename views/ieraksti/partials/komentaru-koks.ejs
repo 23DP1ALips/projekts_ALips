@@ -3,7 +3,7 @@
         <div class="komentara-galva">
             <span><a href="/lietotaji/<%= k.autora_id %>"><%= k.autora_vards %></a> · <%= format.formatDatums(k.izveidots) %></span>
             <% if (lietotajs && (lietotajs.lietotajs_id === k.autora_id || irAdmins)) { %>
-                <form action="/komentari/<%= k.komentars_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('komentari.delete_confirm') %>">
+                <form action="/komentari/<%= k.komentars_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('komentari.delete_confirm') %>"><%- csrfField() %>
                     <button type="submit" class="poga maza bistama"><%= t('common.dzest') %></button>
                 </form>
             <% } %>
@@ -19,7 +19,7 @@
                     <%= t('komentari.reply') %>
                 </button>
             </div>
-            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/komentari" method="post" class="atbildes-forma" id="atbildes-forma-<%= k.komentars_id %>" hidden novalidate>
+            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/komentari" method="post" class="atbildes-forma" id="atbildes-forma-<%= k.komentars_id %>" hidden novalidate><%- csrfField() %>
                 <input type="hidden" name="vecaks_komentars_id" value="<%= k.komentars_id %>">
                 <div class="lauks">
                     <label for="atbildes-teksts-<%= k.komentars_id %>" class="palidzigais"><%= t('komentari.reply_to', { user: k.autora_vards }) %></label>

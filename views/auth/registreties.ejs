@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-<form action="/registreties" method="post" class="forma" novalidate>
+<form action="/registreties" method="post" class="forma" novalidate><%- csrfField() %>
     <h1><%= t('auth.register_title') %></h1>
     <p class="palidzigais"><%= t('auth.register_lead') %></p>
 

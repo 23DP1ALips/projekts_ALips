@@ -7,7 +7,7 @@
     <% } %>
 </div>
 
-<form action="/ieraksti" method="get" class="filtri" role="search" aria-label="<%= t('ieraksti.search_aria') %>">
+<form action="/ieraksti" method="get" class="filtri filtri-paplasinati" role="search" aria-label="<%= t('ieraksti.search_aria') %>">
     <div class="lauks">
         <label for="meklesana"><%= t('ieraksti.search_label') %></label>
         <input id="meklesana" name="meklesana" type="search" value="<%= filtri.meklesana %>" placeholder="<%= t('ieraksti.search_placeholder') %>">
@@ -22,6 +22,18 @@
         </select>
     </div>
     <div class="lauks">
+        <label for="autors"><%= t('ieraksti.author_label') %></label>
+        <input id="autors" name="autors" type="search" value="<%= filtri.autors %>" placeholder="<%= t('ieraksti.author_placeholder') %>" maxlength="50">
+    </div>
+    <div class="lauks">
+        <label for="datums_no"><%= t('ieraksti.date_from') %></label>
+        <input id="datums_no" name="datums_no" type="date" value="<%= filtri.datumsNo %>">
+    </div>
+    <div class="lauks">
+        <label for="datums_lidz"><%= t('ieraksti.date_to') %></label>
+        <input id="datums_lidz" name="datums_lidz" type="date" value="<%= filtri.datumsLidz %>">
+    </div>
+    <div class="lauks">
         <label for="kartosana"><%= t('ieraksti.sort_label') %></label>
         <select id="kartosana" name="kartosana">
             <option value="jaunakie" <%= filtri.kartosana === 'jaunakie' ? 'selected' : '' %>><%= t('ieraksti.sort_newest') %></option>
@@ -31,8 +43,9 @@
             <option value="alfabetiski" <%= filtri.kartosana === 'alfabetiski' ? 'selected' : '' %>><%= t('ieraksti.sort_alpha') %></option>
         </select>
     </div>
-    <div class="lauks">
+    <div class="lauks filtru-darbibas">
         <button type="submit" class="poga primara"><%= t('common.filtret') %></button>
+        <a href="/ieraksti" class="poga"><%= t('ieraksti.reset_filters') %></a>
     </div>
 </form>
 
@@ -63,6 +76,9 @@
                 const params = new URLSearchParams();
                 if (filtri.meklesana) params.set('meklesana', filtri.meklesana);
                 if (filtri.kategorijaId) params.set('kategorija', filtri.kategorijaId);
+                if (filtri.autors) params.set('autors', filtri.autors);
+                if (filtri.datumsNo) params.set('datums_no', filtri.datumsNo);
+                if (filtri.datumsLidz) params.set('datums_lidz', filtri.datumsLidz);
                 if (filtri.kartosana && filtri.kartosana !== 'jaunakie') params.set('kartosana', filtri.kartosana);
                 if (lapaNr > 1) params.set('lapa', lapaNr);
                 const q = params.toString();

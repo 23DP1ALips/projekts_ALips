@@ -6,7 +6,7 @@
 
 <p class="palidzigais"><%= t('iestatijumi.lead') %></p>
 
-<form action="/iestatijumi" method="post" class="forma plata">
+<form action="/iestatijumi" method="post" class="forma plata"><%- csrfField() %>
     <h2><%= t('iestatijumi.appearance') %></h2>
 
     <div class="lauks">
@@ -59,9 +59,12 @@
 
     <div class="formas-darbibas">
         <button type="submit" class="poga primara"><%= t('iestatijumi.save') %></button>
-        <form action="/iestatijumi/atjaunot" method="post" class="iekslinis" data-apstiprinat="<%= t('iestatijumi.reset') %>?">
-            <button type="submit" class="poga"><%= t('iestatijumi.reset') %></button>
-        </form>
+    </div>
+</form>
+
+<form action="/iestatijumi/atjaunot" method="post" class="forma plata" data-apstiprinat="<%= t('iestatijumi.reset') %>?"><%- csrfField() %>
+    <div class="formas-darbibas">
+        <button type="submit" class="poga"><%= t('iestatijumi.reset') %></button>
     </div>
 </form>
 

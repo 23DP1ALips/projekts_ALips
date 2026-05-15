@@ -16,7 +16,7 @@
 
     <div class="balsojuma-bloks">
         <% if (lietotajs && lietotajs.lietotajs_id !== ieraksts.autora_id && ieraksts.statuss === 'publicets') { %>
-            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/balsot" method="post" class="iekslinis">
+            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/balsot" method="post" class="iekslinis"><%- csrfField() %>
                 <button type="submit" class="balsot-poga <%= lietotaja_balsoja ? 'aktivs' : '' %>" aria-pressed="<%= lietotaja_balsoja %>">
                     <span class="balsot-bulta">▲</span>
                     <span class="balsot-skaits"><%= ieraksts.balsu_skaits %></span>
@@ -39,7 +39,7 @@
     <% if (varRedigēt) { %>
         <div class="formas-darbibas" style="margin-top: 20px;">
             <a href="/ieraksti/<%= ieraksts.ieraksts_id %>/rediget" class="poga"><%= t('common.rediget') %></a>
-            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('ieraksti.delete_confirm') %>">
+            <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('ieraksti.delete_confirm') %>"><%- csrfField() %>
                 <button type="submit" class="poga bistama"><%= t('common.dzest') %></button>
             </form>
         </div>
@@ -50,7 +50,7 @@
     <h2><%= t('komentari.title', { count: komentaruKopskaits }) %></h2>
 
     <% if (lietotajs && ieraksts.statuss !== 'slegts') { %>
-        <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/komentari" method="post" class="forma plata" novalidate>
+        <form action="/ieraksti/<%= ieraksts.ieraksts_id %>/komentari" method="post" class="forma plata" novalidate><%- csrfField() %>
             <div class="lauks">
                 <label for="komentara-teksts"><%= t('komentari.add_label') %></label>
                 <textarea id="komentara-teksts" name="teksts" required minlength="2" maxlength="2000"><%= komentaraForma.teksts %></textarea>

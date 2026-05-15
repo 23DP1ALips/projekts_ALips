@@ -3,9 +3,14 @@ const bcrypt = require('bcrypt');
 const db = require('../config/db');
 const { validetRegistraciju, validetPieslegsanos } = require('../utils/validacija');
 const { noverstAutorizetus } = require('../middleware/auth');
+const { patereetCheck, dabutIp } = require('../utils/rateLimiter');
 
 const router = express.Router();
 const HASH_RAUNDI = 12;
+
+const PIESLEGSANAS_LIMITI = (atslega) => ([
+    { key: `login:${atslega}:15min`, max: 5, windowMs: 15 * 60 * 1000 },
+]);
 
 router.get('/registreties', noverstAutorizetus, (req, res) => {
     res.render('auth/registreties', {
@@ -78,6 +83,17 @@ router.post('/pieslegties', noverstAutorizetus, async (req, res, next) => {
     try {
         const { identifikators = '', parole = '' } = req.body;
         const nakamais = req.body.nakamais || '';
+
+        const limits = patereetCheck(PIESLEGSANAS_LIMITI(`ip:${dabutIp(req)}`));
+        if (!limits.ok) {
+            return res.status(429).render('auth/pieslegties', {
+                pageTitle: req.t('auth.login_title'),
+                forma: { identifikators },
+                kludas: { visparigs: 'validation.rate_limit_login' },
+                nakamais,
+            });
+        }
+
         const kludas = validetPieslegsanos({ identifikators, parole });
         if (Object.keys(kludas).length) {
             return res.status(400).render('auth/pieslegties', {

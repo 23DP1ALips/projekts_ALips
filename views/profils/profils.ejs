@@ -13,7 +13,7 @@
     <% } %>
 </section>
 
-<form action="/profils" method="post" class="forma plata" novalidate>
+<form action="/profils" method="post" class="forma plata" novalidate><%- csrfField() %>
     <h2><%= t('profils.edit_section') %></h2>
     <div class="lauks">
         <label for="profila_apraksts"><%= t('profils.description_label') %></label>
@@ -27,7 +27,7 @@
     </div>
 </form>
 
-<form action="/profils/parole" method="post" class="forma plata" novalidate>
+<form action="/profils/parole" method="post" class="forma plata" novalidate><%- csrfField() %>
     <h2><%= t('profils.change_password') %></h2>
     <div class="lauks">
         <label for="parole_pasreizeja"><%= t('profils.current_password') %></label>

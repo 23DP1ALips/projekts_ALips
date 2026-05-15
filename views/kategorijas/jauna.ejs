@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-<form action="/kategorijas/jauna" method="post" class="forma" novalidate>
+<form action="/kategorijas/jauna" method="post" class="forma" novalidate><%- csrfField() %>
     <h1><%= t('kategorijas.create_title') %></h1>
     <p class="palidzigais"><%= t('kategorijas.create_lead') %></p>
 

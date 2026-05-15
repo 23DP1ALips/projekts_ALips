@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-<form action="/atjaunot-paroli/<%= zetons %>" method="post" class="forma" novalidate>
+<form action="/atjaunot-paroli/<%= zetons %>" method="post" class="forma" novalidate><%- csrfField() %>
     <h1><%= t('paroles_atjaunosana.new_title') %></h1>
     <p class="palidzigais"><%= t('paroles_atjaunosana.new_lead') %></p>
 

@@ -4,7 +4,7 @@
     <h1><%= t('atbalsts.title') %></h1>
 </div>
 
-<form action="/atbalsts" method="post" class="forma plata" novalidate>
+<form action="/atbalsts" method="post" class="forma plata" novalidate><%- csrfField() %>
     <p class="palidzigais"><%= t('atbalsts.lead') %></p>
 
     <% if (lietotajs) { %>

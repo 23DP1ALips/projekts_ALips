@@ -127,6 +127,11 @@
         "search_aria": "Search and filter posts",
         "category_label": "Category",
         "category_all": "All",
+        "author_label": "Author",
+        "author_placeholder": "Username",
+        "date_from": "From date",
+        "date_to": "Until date",
+        "reset_filters": "Clear",
         "sort_label": "Sort",
         "sort_newest": "Newest",
         "sort_oldest": "Oldest",
@@ -322,7 +327,8 @@
         "no_permission_delete_comment": "You do not have permission to delete this comment.",
         "post_closed": "This post is closed for comments.",
         "admin_only": "This section is admin-only.",
-        "login_required": "This section requires you to be logged in."
+        "login_required": "This section requires you to be logged in.",
+        "csrf": "Session security token is invalid or missing. Refresh the page and try again."
     },
     "flash": {
         "register_success": "Registration successful. Welcome!",
@@ -484,6 +490,8 @@
         "support_message_length": "Message must be 10-5000 characters long.",
         "rate_limit_ai": "Too many AI requests. Try again in {seconds} seconds.",
         "rate_limit_support": "Too many support requests. Try again in {seconds} seconds.",
-        "rate_limit_password": "Too many password reset requests. Try again in {seconds} seconds."
+        "rate_limit_password": "Too many password reset requests. Try again in {seconds} seconds.",
+        "rate_limit_login": "Too many login attempts. Try again in 15 minutes.",
+        "rate_limit_posts": "Too many posts in a short time. Try again in {seconds} seconds."
     }
 }

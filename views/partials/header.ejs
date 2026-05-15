@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <%- csrfMeta() %>
     <script>
         (function(){try{var t=localStorage.getItem('tema');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
     </script>
@@ -46,7 +47,7 @@
                     </div>
                     <div class="lt-grupa" role="group" aria-label="<%= t('lang.name') %>">
                         <% atbalstitasValodas.forEach(function (kods) { %>
-                            <form action="/valoda/<%= kods %>" method="post" class="iekslinis">
+                            <form action="/valoda/<%= kods %>" method="post" class="iekslinis"><%- csrfField() %>
                                 <input type="hidden" name="atpakal" value="<%= path %><%= Object.keys(query).length ? '?' + new URLSearchParams(query).toString() : '' %>">
                                 <button type="submit" class="<%= lang === kods ? 'aktivs' : '' %>" title="<%= t('lang.' + kods) %>"><%= kods.toUpperCase() %></button>
                             </form>
@@ -58,7 +59,7 @@
                     <a href="/profils" class="poga-saite">
                         <%= lietotajs.lietotajvards %>
                     </a>
-                    <form action="/iziet" method="post" class="iekslinis">
+                    <form action="/iziet" method="post" class="iekslinis"><%- csrfField() %>
                         <button type="submit" class="poga maza"><%= t('nav.iziet') %></button>
                     </form>
                 <% } else { %>

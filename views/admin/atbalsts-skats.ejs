@@ -22,7 +22,7 @@
     <div><%- format.nl2br(pieprasijums.zinojums) %></div>
 </article>
 
-<form action="/admin/atbalsts/<%= pieprasijums.atbalsts_id %>/atbilde" method="post" class="forma plata" novalidate>
+<form action="/admin/atbalsts/<%= pieprasijums.atbalsts_id %>/atbilde" method="post" class="forma plata" novalidate><%- csrfField() %>
     <h2><%= t('admin_atbalsts.reply_label') %></h2>
     <p class="palidzigais"><%= t('admin_atbalsts.reply_help') %></p>
     <div class="lauks">
@@ -32,7 +32,7 @@
     <div class="formas-darbibas">
         <button type="submit" class="poga primara"><%= t('admin_atbalsts.send_reply') %></button>
         <% if (pieprasijums.statuss !== 'aizverts') { %>
-            <form action="/admin/atbalsts/<%= pieprasijums.atbalsts_id %>/aizvert" method="post" class="iekslinis" data-apstiprinat="<%= t('admin_atbalsts.close_confirm') %>">
+            <form action="/admin/atbalsts/<%= pieprasijums.atbalsts_id %>/aizvert" method="post" class="iekslinis" data-apstiprinat="<%= t('admin_atbalsts.close_confirm') %>"><%- csrfField() %>
                 <button type="submit" class="poga"><%= t('admin_atbalsts.close') %></button>
             </form>
         <% } %>

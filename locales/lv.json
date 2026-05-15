@@ -127,6 +127,11 @@
         "search_aria": "Ierakstu meklēšana un filtrēšana",
         "category_label": "Kategorija",
         "category_all": "Visas",
+        "author_label": "Autors",
+        "author_placeholder": "Lietotājvārds",
+        "date_from": "No datuma",
+        "date_to": "Līdz datumam",
+        "reset_filters": "Notīrīt",
         "sort_label": "Kārtot",
         "sort_newest": "Jaunākie",
         "sort_oldest": "Vecākie",
@@ -322,7 +327,8 @@
         "no_permission_delete_comment": "Nav atļaujas dzēst šo komentāru.",
         "post_closed": "Šis ieraksts ir slēgts komentāriem.",
         "admin_only": "Šī sadaļa pieejama tikai administratoriem.",
-        "login_required": "Šī sadaļa pieejama tikai pieslēgtiem lietotājiem."
+        "login_required": "Šī sadaļa pieejama tikai pieslēgtiem lietotājiem.",
+        "csrf": "Sesijas drošības žetons nav derīgs vai trūkst. Atjaunojiet lapu un mēģiniet vēlreiz."
     },
     "flash": {
         "register_success": "Reģistrācija veiksmīga. Laipni lūdzam!",
@@ -484,6 +490,8 @@
         "support_message_length": "Ziņojumam jābūt 10-5000 simbolu garam.",
         "rate_limit_ai": "Pārāk daudz AI pieprasījumu. Mēģiniet pēc {seconds} sekundēm.",
         "rate_limit_support": "Pārāk daudz atbalsta pieprasījumu. Mēģiniet pēc {seconds} sekundēm.",
-        "rate_limit_password": "Pārāk daudz paroles atjaunošanas pieprasījumu. Mēģiniet pēc {seconds} sekundēm."
+        "rate_limit_password": "Pārāk daudz paroles atjaunošanas pieprasījumu. Mēģiniet pēc {seconds} sekundēm.",
+        "rate_limit_login": "Pārāk daudz pieslēgšanās mēģinājumu. Mēģiniet pēc 15 minūtēm.",
+        "rate_limit_posts": "Pārāk daudz ierakstu īsā laikā. Mēģiniet pēc {seconds} sekundēm."
     }
 }

@@ -2,8 +2,15 @@ const express = require('express');
 const db = require('../config/db');
 const { pieprasitAutorizaciju } = require('../middleware/auth');
 const { validetIerakstu, validetKomentaru } = require('../utils/validacija');
+const { patereetCheck } = require('../utils/rateLimiter');
+const { buildPostFilter } = require('../utils/postFilters');
 
 const router = express.Router();
+
+const IERAKSTU_VEIDOSANAS_LIMITI = (lietotajsId) => ([
+    { key: `posts:user:${lietotajsId}:stunda`, max: 5, windowMs: 60 * 60 * 1000 },
+    { key: `posts:user:${lietotajsId}:dien`, max: 20, windowMs: 24 * 60 * 60 * 1000 },
+]);
 
 const ATLAUTI_LAPAS_LIELUMI = [10, 20, 50];
 const KARTOSANAS_VARIANTI = {
@@ -33,8 +40,6 @@ function veidotKomentaruKoku(rindas) {
 
 router.get('/', async (req, res, next) => {
     try {
-        const meklesana = (req.query.meklesana || '').trim();
-        const kategorijaId = Number(req.query.kategorija) || null;
         const noklusejumaKart = res.locals.iestatijumi && res.locals.iestatijumi.kartosana ? res.locals.iestatijumi.kartosana : 'jaunakie';
         const kartosana = KARTOSANAS_VARIANTI[req.query.kartosana] ? req.query.kartosana : noklusejumaKart;
         const noklusejumaLielums = res.locals.iestatijumi && res.locals.iestatijumi.lapas_lielums ? res.locals.iestatijumi.lapas_lielums : 10;
@@ -42,20 +47,15 @@ router.get('/', async (req, res, next) => {
         const lapa = Math.max(1, Number(req.query.lapa) || 1);
         const nobide = (lapa - 1) * LAPAS_LIELUMS;
 
-        const nosacijumi = ['i.statuss = ?'];
-        const parametri = ['publicets'];
+        const filtrs = buildPostFilter(req.query);
+        const kur = filtrs.whereSql;
 
-        if (meklesana) {
-            nosacijumi.push('(i.virsraksts LIKE ? OR i.saturs LIKE ?)');
-            parametri.push(`%${meklesana}%`, `%${meklesana}%`);
-        }
-        if (kategorijaId) {
-            nosacijumi.push('i.kategorija_id = ?');
-            parametri.push(kategorijaId);
-        }
-        const kur = nosacijumi.join(' AND ');
-
-        const [skaitsRez] = await db.query(`SELECT COUNT(*) AS skaits FROM ieraksts i WHERE ${kur}`, parametri);
+        const [skaitsRez] = await db.query(`
+            SELECT COUNT(*) AS skaits
+            FROM ieraksts i
+            JOIN lietotajs l ON l.lietotajs_id = i.autora_id
+            WHERE ${kur}
+        `, filtrs.parametri);
         const kopaSkaits = skaitsRez[0].skaits;
         const kopaLapas = Math.max(1, Math.ceil(kopaSkaits / LAPAS_LIELUMS));
 
@@ -71,7 +71,7 @@ router.get('/', async (req, res, next) => {
             WHERE ${kur}
             ORDER BY ${KARTOSANAS_VARIANTI[kartosana]}
             LIMIT ? OFFSET ?
-        `, [...parametri, LAPAS_LIELUMS, nobide]);
+        `, [...filtrs.parametri, LAPAS_LIELUMS, nobide]);
 
         const [kategorijas] = await db.query(`
             SELECT kategorija_id, nosaukums FROM kategorija WHERE aktiva = TRUE ORDER BY secibas_nr ASC, nosaukums ASC
@@ -81,7 +81,14 @@ router.get('/', async (req, res, next) => {
             pageTitle: req.t('ieraksti.page_title'),
             ieraksti,
             kategorijas,
-            filtri: { meklesana, kategorijaId, kartosana },
+            filtri: {
+                meklesana: filtrs.normalize.meklesana,
+                kategorijaId: filtrs.normalize.kategorijaId,
+                autors: filtrs.normalize.autors,
+                datumsNo: filtrs.normalize.datumsNo || '',
+                datumsLidz: filtrs.normalize.datumsLidz || '',
+                kartosana,
+            },
             lapa,
             kopaLapas,
             kopaSkaits,
@@ -111,6 +118,13 @@ router.get('/jauns', pieprasitAutorizaciju, async (req, res, next) => {
 router.post('/', pieprasitAutorizaciju, async (req, res, next) => {
     try {
         const { virsraksts = '', saturs = '', kategorija_id = '' } = req.body;
+
+        const limits = patereetCheck(IERAKSTU_VEIDOSANAS_LIMITI(req.session.lietotajs.lietotajs_id));
+        if (!limits.ok) {
+            req.flash('error', req.t('validation.rate_limit_posts', { seconds: limits.retryAfterSec }));
+            return res.redirect('/ieraksti');
+        }
+
         const kludas = validetIerakstu({ virsraksts, saturs, kategorija_id });
 
         if (Object.keys(kludas).length) {

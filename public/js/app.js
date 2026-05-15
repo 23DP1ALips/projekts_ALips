@@ -105,6 +105,11 @@
         });
     }
 
+    function csrfToken() {
+        var meta = document.querySelector('meta[name="csrf-token"]');
+        return meta ? meta.getAttribute('content') : '';
+    }
+
     var aiBlocks = document.querySelectorAll('[data-ai]');
     aiBlocks.forEach(function (bloks) {
         var i18n = {};
@@ -131,7 +136,7 @@
                 darbibas.hidden = true;
                 fetch('/ai/' + darbiba, {
                     method: 'POST',
-                    headers: { 'content-type': 'application/json' },
+                    headers: { 'content-type': 'application/json', 'x-csrf-token': csrfToken() },
                     body: JSON.stringify({ teksts: teksts }),
                 }).then(function (r) {
                     return r.json().then(function (d) { return { ok: r.ok, data: d }; });

@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-<form action="<%= redigetId ? '/ieraksti/' + redigetId : '/ieraksti' %>" method="post" class="forma plata" novalidate>
+<form action="<%= redigetId ? '/ieraksti/' + redigetId : '/ieraksti' %>" method="post" class="forma plata" novalidate><%- csrfField() %>
     <h1><%= redigetId ? t('ieraksti.edit_title') : t('ieraksti.new_title') %></h1>
 
     <div class="lauks">

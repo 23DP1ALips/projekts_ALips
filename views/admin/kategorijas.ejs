@@ -5,7 +5,7 @@
     <h1><%= t('admin.categories') %></h1>
 </div>
 
-<form action="<%= redigetId ? '/admin/kategorijas/' + redigetId : '/admin/kategorijas' %>" method="post" class="forma plata">
+<form action="<%= redigetId ? '/admin/kategorijas/' + redigetId : '/admin/kategorijas' %>" method="post" class="forma plata"><%- csrfField() %>
     <h2><%= redigetId ? t('admin.categories_edit') : t('admin.categories_add') %></h2>
 
     <div class="lauks">
@@ -68,7 +68,7 @@
                     <td>
                         <div class="darbibu-stabins">
                             <a href="/admin/kategorijas/<%= k.kategorija_id %>/rediget" class="poga maza"><%= t('common.rediget') %></a>
-                            <form action="/admin/kategorijas/<%= k.kategorija_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.delete_category_confirm', { name: k.nosaukums }) %>">
+                            <form action="/admin/kategorijas/<%= k.kategorija_id %>/dzest" method="post" class="iekslinis" data-apstiprinat="<%= t('admin.delete_category_confirm', { name: k.nosaukums }) %>"><%- csrfField() %>
                                 <button type="submit" class="poga maza bistama"><%= t('common.dzest') %></button>
                             </form>
                         </div>

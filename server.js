@@ -25,7 +25,9 @@ if (!SESSION_SECRET || SESSION_SECRET.length < 32 || NEDROSI_NOKLUSEJUMI.has(SES
 
 const app = express();
 
-app.set('trust proxy', 'loopback, linklocal, uniquelocal');
+// Aiz hostinga reverse proxy (Railway/Render/u.c.) - uztic vienai HTTP-galvenei
+// X-Forwarded-Proto, lai express-session zinatu, ka pieprasijums nak ar TLS.
+app.set('trust proxy', process.env.NODE_ENV === 'production' ? 1 : 'loopback, linklocal, uniquelocal');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
